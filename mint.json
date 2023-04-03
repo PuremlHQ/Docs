@@ -1,65 +1,69 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Documentation Starter Kit",
+  "name": "PureML",
   "logo": {
-    "dark": "/logo/dark.png",
-    "light": "/logo/light.png"
+    "dark": "/logo/PureMLLogo_Light.png",
+    "light": "/logo/PureMLLogo_Dark.svg"
   },
-  "favicon": "/favicon.png",
+  "favicon": "favicon.png",
   "colors": {
     "primary": "#0069ED",
     "light": "#4D9CFF",
     "dark": "#0050B4"
   },
-  "topbarLinks": [
-    {
-      "name": "Documentation",
-      "url": "https://mintlify.com/docs"
-    }
-  ],
+  "topbarLinks": [],
   "topbarCtaButton": {
     "name": "Get Started",
-    "url": "https://github.com/mintlify/starter"
+    "url": "https://pureml.com/auth/signin"
   },
   "anchors": [
     {
-      "name": "API Reference",
-      "icon": "rectangle-terminal",
-      "url": "api-reference"
-    },
-    {
       "name": "Changelog",
       "icon": "list",
-      "url": "https://mintlify.com"
+      "url": "https://changelog.pureml.com"
     },
     {
       "name": "Community",
       "icon": "discord",
-      "url": "https://mintlify.com/community"
+      "url": "https://discord.gg/xNUHt9yguJ"
     }
   ],
   "navigation": [
     {
-      "group": "Home",
-      "pages": ["introduction", "features"]
+      "group": "GETTING STARTED",
+      "pages": ["welcome", "introduction", "installation"]
     },
     {
-      "group": "API Documentation",
-      "pages": ["api-reference/authentication"]
-    },
-    {
-      "group": "Endpoint Examples",
+      "group": "CORE CONCEPTS",
       "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/update",
-        "api-reference/endpoint/delete"
+        "/core-concepts/model",
+        "/core-concepts/dataset",
+        "/core-concepts/log",
+        "/core-concepts/lineage",
+        "/core-concepts/branch"
       ]
+    },
+    {
+      "group": "VERSION",
+      "pages": [
+        "/version/version-model",
+        "/version/version-dataset",
+        "/version/capture-data-lineage",
+        "/version/example"
+      ]
+    },
+    {
+      "group": "EVALUATE",
+      "pages": ["/evaluate/create-your-first-evaluation", "/evaluate/example"]
+    },
+    {
+      "group": "PACKAGE",
+      "pages": ["/package/docker", "/package/fastapi"]
     }
   ],
   "footerSocials": {
-    "twitter": "https://twitter.com/mintlify",
-    "github": "https://github.com/mintlify",
-    "linkedin": "https://www.linkedin.com/company/mintsearch"
+    "twitter": "https://twitter.com/puremlHQ",
+    "github": "https://github.com/puremlhq",
+    "linkedin": "https://www.linkedin.com/company/pureml-inc"
   }
 }

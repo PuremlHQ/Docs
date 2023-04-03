@@ -1,0 +1,83 @@
+---
+title: Dataset
+description: Add your first dataset.
+---
+
+PureML Datasets are a crucial component for organizing user datasets. A Dataset serves as an empty container for storing the elements of the datasets and contains lineage, dataset-related graphs, and dataset files.
+
+There are two types of datasets in PureML: Private Datasets, which only the user can access and view the content, and Public Datasets, which are accessible to all PureML users.
+
+To register dataset files and add their relevant content to the Dataset, the user needs to initialize an empty Dataset, which can be done via the PureML Python package.
+
+### Creating a Dataset
+
+With the PureML dataset module, you can perform a variety of actions related to creating and managing datasets and branches. Here's an overview of the available methods:
+
+Creating a Dataset To create a new model, import the pureml module and use the `model.init` method:
+
+```python
+import pureml
+
+pureml.dataset.init(
+    label='FirstDataset:dev',
+    readme='ReadME.md'
+)
+```
+
+The name of the dataset and the branch to be created are required parameters. You can also provide an optional readme file path.
+
+{% hint style="info" %}
+**label** parameter consists dataset name, branch in the following format,&#x20;
+
+_\<name>:\<name>:\<version>_.&#x20;
+
+For initializing a dataset, _version_ is not required. So, we use _\<name>:\<branch>_ as the label.
+{% endhint %}
+
+{% hint style="danger" %}
+**label** should not contain any spaces. Special characters other than "**-**" and "**\_**" are not allowed
+{% endhint %}
+
+### Listing Datasets&#x20;
+
+To list all available datasets, use the `dataset.list` method:
+
+```python
+import pureml
+
+pureml.dataset.list()
+```
+
+### Creating a Branch
+
+To create a new branch for a dataset, use the `dataset.init_branch` method:
+
+```python
+import pureml
+
+pureml.dataset.init_branch(
+    label='FirstDataset:dev_2'
+)
+```
+
+The branch name and the name of the dataset in which the branch will be created are required parameters.
+
+### Listing Branches&#x20;
+
+To list all available branches for a model, use the `dataset.branch_list` method:
+
+```python
+import pureml
+
+pureml.dataset.branch_list(label='FirstDataset')
+```
+
+{% hint style="info" %}
+**label** parameter consists dataset name, branch in the following format,&#x20;
+
+_\<name>:\<branch>:\<version>_.&#x20;
+
+For getting a list of branches of a dataset, _branch_, and _version_ is not required. So, we use _\<name>_ as the label.
+{% endhint %}
+
+These methods make it easy to create and manage the models and branches in PureML. By using them, you can streamline your model management workflows and improve collaboration among team members.

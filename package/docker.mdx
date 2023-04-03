@@ -1,0 +1,117 @@
+---
+title: Docker
+---
+
+PureML uses Docker-py to create containers for the models.
+
+### **Installing Prerequisites**
+
+Before you start creating the container for your model, install the following clients on your machine. If not explicitly specified, use the latest available version of the specified components.
+
+### **Creating predict function**
+
+To deploy the model, a prediction function is required from the user to make predictions. We expect this function to be placed in a _`predict.py`_ file along with other supporting functions.
+
+```
+def model_predict(model, data):
+    # This function takes model, and data as input and
+    # outputs model predictions
+
+    output = # model predictions
+
+    return output
+```
+
+The above code snippet explains the format for the contents in the _`predict.py`_ file. There are a few **mandatory** structural requirements.
+
+- The prediction function should be named **`model_predic`**
+- The parameters for the prediction function should contain only mandatory **`model`**, and **`data`** fields.
+
+---
+
+### **Creating Requirements file**
+
+To execute the prediction function, PureML needs to know the required python libraries. These libraries should be given in a `requirements.txt` file:
+
+```
+pandas==1.4.3
+numpy==1.23.1
+xgboost==1.7.2
+scikit-learn==1.2.0
+```
+
+### Creating Docker Container
+
+```
+import pureml
+
+pureml.docker.create('<model name>', '<model branch>', '<modle version>', 
+                    image_tag='<docker image tag>',
+                    org_id='<org id>',
+                    access_token='<access token>',
+                    input={'type': '<input type>'},
+                    output={'type': '<input type>'}
+                    )
+```
+
+### Expected Output
+
+If executed successfully, PureML returns the following message along with the URL where the model is hosted.
+
+```
+Taking the default predict.py file path:  <path to predict.py>
+Taking the requirements.txt file path:  < path to requirements.txt>
+FastAPI server files are created
+Docker image is created
+<Image: '<model name>:<model version>'>
+Created Docker container
+<Container: <container id>>
+Prediction requests can be forwarded to 0.0.0.0:8000/predict
+```
+
+&#x20;The model is hosted at _0.0.0.0:8000/predict._ Users can get predictions by sending get requests to the API.
+
+### Sending Requests to the API
+
+**Using Requests**
+
+The API call expects a parameter named _`test_data`_ that contains data to be tested. This data will be passed on to the `data` parameter set in the `model_predict` function. PureML obtains the model specified in the `pureml.docker.create` command and sends it to the`model` parameter of the `model_predict` function.
+
+```
+import requests
+
+params = {'test_data': <test data>}
+headers = {'accept': 'application/json'}
+
+response = requests.get('http://0.0.0.0:8000/predict', params=params, headers=headers)
+predictions = response.json()
+```
+
+Predictions can be extracted from the json response.
+
+**Using Curl**
+
+```
+curl -X 'GET'  'http://0.0.0.0:8000/predict?test_data=<test data>' -H 'accept: application/json'
+```
+
+**Accepted Input and Output types**
+
+The description of input and output data types is required to create the docker container. Here is the list of available data types
+
+**Input datatypes**
+
+The JSON data received by the API endpoint will convert the data into the required datatype specified by the user. For the `image` data type, API will load the received file though `pillow` library and convert it into a `numpy ndarray` before passing it into the prediction function.
+
+- [Numpy array](https://numpy.org/doc/stable/): 'numpy ndarray'
+- [Pandas dataframe](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html): 'pandas dataframe'
+- string: 'text
+- [Image](https://pillow.readthedocs.io/en/stable/reference/Image.html): 'image'
+
+**Output datatypes**
+
+The model output will be converted into a JSON string and returned to the user upon an API call. Here are the supported output datatypes.
+
+- [Numpy array](https://numpy.org/doc/stable/): 'numpy ndarray
+- [Pandas dataframe](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html): 'pandas dataframe
+- string: 'text

@@ -1,0 +1,37 @@
+---
+title: Installation
+description: "Welcome to your new Mintlify documentation. Get started making it yours."
+---
+
+To get started with PureML, you'll need to install the PureML Python SDK. This SDK will allow you to work with the PureML platform, from creating your account to deploying your models.
+
+To install PureML, simply run the following command:
+
+```
+pip3 install pureml
+```
+
+If you're new to PureML, you'll need to sign up for an account before you can start using the platform. You can do this using the `pureml-cli` command line utility:
+
+```
+pureml-cli auth signup
+```
+
+This command will prompt you to enter your email, user handle, name, and password to create your account.
+
+If you already have a PureML account, you can log in using the `pureml-cli` command line utility:
+
+```
+pureml-cli auth login
+```
+
+This command will prompt you to enter your username and password to sign in. Alternatively, you can log in to PureML using our Python SDK:
+
+```python
+import pureml
+
+pureml.login(org_id='<org_id>',
+            access_token='<access_token>')
+```
+
+Once you're logged in, you'll be able to view your datasets, models, and other assets using the PureML platform.
