@@ -36,29 +36,29 @@
     {
       "group": "CORE CONCEPTS",
       "pages": [
-        "/core-concepts/model",
-        "/core-concepts/dataset",
-        "/core-concepts/log",
-        "/core-concepts/lineage",
-        "/core-concepts/branch"
+        "core-concepts/model",
+        "core-concepts/dataset",
+        "core-concepts/log",
+        "core-concepts/lineage",
+        "core-concepts/branch"
       ]
     },
     {
       "group": "VERSION",
       "pages": [
-        "/version/version-model",
-        "/version/version-dataset",
-        "/version/capture-data-lineage",
-        "/version/example"
+        "version/version-model",
+        "version/version-dataset",
+        "version/capture-data-lineage",
+        "version/example"
       ]
     },
     {
       "group": "EVALUATE",
-      "pages": ["/evaluate/create-your-first-evaluation", "/evaluate/example"]
+      "pages": ["evaluate/create-your-first-evaluation", "evaluate/example"]
     },
     {
       "group": "PACKAGE",
-      "pages": ["/package/docker", "/package/fastapi"]
+      "pages": ["package/docker", "package/fastapi"]
     }
   ],
   "footerSocials": {
