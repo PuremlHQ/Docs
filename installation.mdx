@@ -7,13 +7,13 @@ To get started with PureML, you'll need to install the PureML Python SDK. This S
 
 To install PureML, simply run the following command:
 
-```
+```bash
 pip3 install pureml
 ```
 
 If you're new to PureML, you'll need to sign up for an account before you can start using the platform. You can do this using the `pureml-cli` command line utility:
 
-```
+```bash
 pureml-cli auth signup
 ```
 
@@ -21,7 +21,7 @@ This command will prompt you to enter your email, user handle, name, and passwor
 
 If you already have a PureML account, you can log in using the `pureml-cli` command line utility:
 
-```
+```bash
 pureml-cli auth login
 ```
 
@@ -30,8 +30,7 @@ This command will prompt you to enter your username and password to sign in. Alt
 ```python
 import pureml
 
-pureml.login(org_id='<org_id>',
-            access_token='<access_token>')
+pureml.login(org_id='<org_id>', access_token='<access_token>')
 ```
 
 Once you're logged in, you'll be able to view your datasets, models, and other assets using the PureML platform.

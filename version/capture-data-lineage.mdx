@@ -8,11 +8,11 @@ Let us consider the following example.
 
 ### Example
 
+```python
 from sklearn.preprocessing import OrdinalEncoder
 import pandas as pd
 from pureml.decorators import dataset, model, transformer, load_data
 
-```
 @load_data
 def load_churn_data():
 df = pd.read_csv('/home/vamsidhar/Downloads/bigml_59c28831336c6604c800002a.csv')
@@ -50,4 +50,4 @@ df = build_dataset()
 
 The above example generates the following pipeline structure.
 
-<img src="/images/lineage_advanced.png" alt="" />
+<img src="/images/lineage_advanced.png" alt="Advanced Lineage" />

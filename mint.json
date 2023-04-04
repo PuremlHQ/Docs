@@ -5,7 +5,7 @@
     "dark": "/logo/PureMLLogo_Light.png",
     "light": "/logo/PureMLLogo_Dark.svg"
   },
-  "favicon": "favicon.png",
+  "favicon": "/favicon.png",
   "colors": {
     "primary": "#0069ED",
     "light": "#4D9CFF",
@@ -14,7 +14,7 @@
   "topbarLinks": [],
   "topbarCtaButton": {
     "name": "Get Started",
-    "url": "https://pureml.com/auth/signin"
+    "url": "https://github.com/mintlify/starter"
   },
   "anchors": [
     {
@@ -36,29 +36,29 @@
     {
       "group": "CORE CONCEPTS",
       "pages": [
-        "core-concepts/model",
-        "core-concepts/dataset",
-        "core-concepts/log",
-        "core-concepts/lineage",
-        "core-concepts/branch"
+        "/core-concepts/model",
+        "/core-concepts/dataset",
+        "/core-concepts/log",
+        "/core-concepts/lineage",
+        "/core-concepts/branch"
       ]
     },
     {
       "group": "VERSION",
       "pages": [
-        "version/version-model",
-        "version/version-dataset",
-        "version/capture-data-lineage",
-        "version/example"
+        "/version/version-model",
+        "/version/version-dataset",
+        "/version/capture-data-lineage",
+        "/version/example"
       ]
     },
     {
       "group": "EVALUATE",
-      "pages": ["evaluate/create-your-first-evaluation", "evaluate/example"]
+      "pages": ["/evaluate/create-your-first-evaluation", "/evaluate/example"]
     },
     {
       "group": "PACKAGE",
-      "pages": ["package/docker", "package/fastapi"]
+      "pages": ["/package/docker", "/package/fastapi"]
     }
   ],
   "footerSocials": {

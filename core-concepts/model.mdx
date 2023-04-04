@@ -1,5 +1,6 @@
 ---
 title: Model
+description: Start creating your model.
 ---
 
 The PureML model registry provides a centralized location for users to store their models and manage their lifecycle collaboratively. This makes it easier for stakeholders to manage models and promotes transparency in accessing models for tests, deployment, audit, and other purposes.
@@ -21,27 +22,26 @@ Creating a Model To create a new model, import the pureml module and use the `mo
 ```python
 import pureml
 
-pureml.model.init(
-    label='FirstModel:dev',
-    readme='ReadME.md'
-)
+pureml.model.init(label='FirstModel:dev', readme='ReadME.md')
 ```
 
 The name of the model and the branch to be created are required parameters. You can also provide an optional readme file path.
 
-{% hint style="info" %}
-**label** parameter consists of model name, branch in the following format,&#x20;
+<Note>
+  **label** parameter consists of model name, branch in the following format:
 
-_\<name>:\<branch>:\<version>_.&#x20;
+`_\<name>:\<branch>:\<version>_`
 
 For initializing a model, _version_ is not required. So, we use _\<name>:\<branch>_ as the label.
-{% endhint %}
 
-{% hint style="danger" %}
-**label** should not contain any spaces. Special characters other than "**-**" and "**\_**" are not allowed
-{% endhint %}
+</Note>
 
-### Listing Models&#x20;
+<Warning>
+  **label** should not contain any spaces. Special characters other than "**-**"
+  and "**\_**" are not allowed.
+</Warning>
+
+### Listing Models
 
 To list all available models, use the `model.list` method:
 
@@ -53,19 +53,17 @@ pureml.model.list()
 
 ### Creating a Branch
 
-&#x20;To create a new branch for a model, use the `model.init_branch` method:
+To create a new branch for a model, use the `model.init_branch` method:
 
 ```python
 import pureml
 
-pureml.model.init_branch(
-    label='FirstModel:dev_2'
-)
+pureml.model.init_branch(label='FirstModel:dev_2')
 ```
 
 The branch name and the name of the model in which the branch will be created are required parameters.
 
-### Listing Branches&#x20;
+### Listing Branches
 
 To list all available branches for a model, use the `model.branch_list` method:
 
@@ -75,12 +73,13 @@ import pureml
 pureml.model.branch_list(model_name='FirstModel')
 ```
 
-{% hint style="info" %}
-**label** parameter consists model name, branch in the following format,&#x20;
+<Note>
+**label** parameter consists model name, branch in the following format,
 
-_\<name>:\<branch>:\<version>_
+`_\<name>:\<branch>:\<version>_`
 
 For getting a list of branches of a model, _branch_ and _version_ are not required. So, we use _\<name>_ as the label.
-{% endhint %}
+
+</Note>
 
 These methods make it easy to create and manage the models and branches in PureML. By using them, you can streamline your model management workflows and improve collaboration among team members.

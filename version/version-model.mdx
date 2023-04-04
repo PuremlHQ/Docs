@@ -13,8 +13,6 @@ pip install pureml
 pip install xgboost
 ```
 
-{% code lineNumbers="true" %}
-
 ```python
 from sklearn.datasets import load_iris
 from sklearn.metrics import accuracy_score
@@ -25,54 +23,48 @@ import pureml
 from pureml.decorators.model import model
 ```
 
-{% endcode %}
-
 ### Train and Register your Model Version
 
 We will train a `XGBClassifier` to predict the classes of samples from `Iris dataset` in this tutorial. This is a straightforward training function that returns the trained model and prints the `accuracy` of our model. We will utilize the `Iris` data from sklearn.
 
-```
+```python
 X, y = load_iris(return_X_y=True)
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
 ```
 
-```
+```python
 def train():
-    xgb_model = xgb.XGBClassifier()
-    xgb_model.fit(X_train, y_train)    
-    predictions = xgb_model.predict(X_test)
+    xgb_model = xgb.XGBClassifier()
+    xgb_model.fit(X_train, y_train)
+    predictions = xgb_model.predict(X_test)
 
- 
+    acc = accuracy(y_test, predictions)
+    print("accuracy: ", acc)
 
-    acc = accuracy(y_test, predictions)    
-    print("accuracy: ", acc)
-
-    return xgb_model
-
- 
+    return xgb_model
 
 xgb_model = train()
 ```
 
 ### Now let's register our model to pureml
 
-To register the model, add the @model decorator to the training function. PureML will register the returned trained model to your PureML project.
+To register the model, add the `@model` decorator to the training function. PureML will register the returned trained model to your PureML project.
 
-Let's also replace print() with pureml.log() to register obtained model metrics to the project.
+Let's also replace `print()` with `pureml.log()` to register obtained model metrics to the project.
 
-```
+```python
 @model('iris_classifier', 'dev')
 def train():
-    xgb_model = xgb.XGBClassifier()
-    xgb_model.fit(X_train, y_train)    
-    predictions = xgb_model.predict(X_test)
+    xgb_model = xgb.XGBClassifier()
+    xgb_model.fit(X_train, y_train)
+    predictions = xgb_model.predict(X_test)
 
-    acc = accuracy(y_test, predictions)     
+    acc = accuracy(y_test, predictions)
 
-    pureml.log(metrics={'accuracy':acc})
-    print("accuracy: ", acc)
+    pureml.log(metrics={'accuracy':acc})
+    print("accuracy: ", acc)
 
-    return xgb_model 
+    return xgb_model 
 
 xgb_model = train()
 ```
@@ -83,23 +75,23 @@ Once you register your model to PureML, you can load the model from PureML using
 
 Let's look at how to load and generate predictions with your model:
 
-```
+```python
 import pureml
 
 model = pureml.model.fetch('iris_clasifier', 'dev')
 X, y = load_iris(return_X_y=True)
-preds = model.predict(X) 
+preds = model.predict(X)
 ```
 
 By default, `fetch` method fetches `latest` version of the model. A particular `version` of a model can be fetched by providing version parameter as the following.
 
-```
+```python
 model = pureml.model.fetch('iris_classifier', 'dev', 'v3')
 ```
 
 Here, we have fetched the version `v3` of the model `iris_classifier`.
 
-```
+```python
 print('Prediction: ', preds[0])
 ```
 
@@ -107,6 +99,4 @@ print('Prediction: ', preds[0])
 
 By providing a comprehensive set of metrics and visualizations, PureML makes it easy to identify and correct any issues with its review feature and allows you to evaluate the quality of their data and the accuracy of their model. Owner can approve or reject to add in production.
 
-{% embed url="https://youtu.be/mbAlJJfB9Nc" %}
-Model Review
-{% endembed %}
+<iframe src="https://youtu.be/mbAlJJfB9Nc">Model Review</iframe>

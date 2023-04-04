@@ -6,7 +6,7 @@ title: Version Dataset
 
 After the Dataset has been initialized, you can register it using `dataset` module.
 
-```
+```python
 import pureml
 
 data = ###
@@ -15,19 +15,19 @@ lineage = ##@
 dataset = pureml.dataset.register(data, 'telecom churn', lineage, branch='dev')
 ```
 
-`lineage` is required to register a dataset. Yours can utilize @dataset decorator to auto-generate data lineage.
+`lineage` is required to register a dataset. Yours can utilize `@dataset` decorator to auto-generate data lineage.
 
-```
+```python
 from sklearn.preprocessing import OrdinalEncoder
 import pandas as pd
 from pureml.decorators import dataset, transformer, load_data
 
 @dataset('telecom_churn:dev')
 def build_dataset():
-    df = load_churn_data() 
-    df = encode_ordinal(df)
-    df = encode_binary(df)
-    return df
+    df = load_churn_data()
+    df = encode_ordinal(df)
+    df = encode_binary(df)
+    return df
 
 df = build_dataset()
 ```
@@ -38,7 +38,7 @@ Once you register your dataset to PureML, you can load it using `dataset` module
 
 Let's look at how to load the dataset:
 
-```
+```python
 import pureml
 
 dataset = pureml.dataset.fetch('telecom churn', branch='dev')
@@ -46,7 +46,7 @@ dataset = pureml.dataset.fetch('telecom churn', branch='dev')
 
 By default, `fetch` fetches `latest` version of the dataset. A particular version of a dataset can be fetched by providing `version` parameter as the following.
 
-```
+```python
 dataset = pureml.dataset.fetch('telecom churn', branch='dev', 'v2')
 ```
 
@@ -56,6 +56,4 @@ Here, we have fetched the version `v2` of the dataset `telecom churn`.
 
 By providing a comprehensive set of data lineage and visualizations, PureML makes it easy to identify and correct any issues with its review feature. Owner can approve or reject to add in production.
 
-{% embed url="https://youtu.be/SNYDxOMVi1A" %}
-Dataset Review
-{% endembed %}
+<iframe src="https://youtu.be/SNYDxOMVi1A">Dataset Review</iframe>
