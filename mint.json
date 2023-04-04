@@ -11,12 +11,21 @@
     "light": "#4D9CFF",
     "dark": "#0050B4"
   },
+  "metadata": {
+    "og:image": "https://pureml.com/PureMLMetaImg.svg",
+    "twitter:site": "@puremlhq"
+  },
   "topbarLinks": [],
   "topbarCtaButton": {
-    "name": "Get Started",
-    "url": "https://github.com/mintlify/starter"
+    "type": "github",
+    "url": "https://github.com/puremlHQ/pureml"
   },
   "anchors": [
+    {
+      "name": "SDK",
+      "icon": "code",
+      "url": "sdk"
+    },
     {
       "name": "Changelog",
       "icon": "list",
@@ -59,6 +68,47 @@
     {
       "group": "PACKAGE",
       "pages": ["package/docker", "package/fastapi"]
+    },
+    {
+      "group": "Artifacts",
+      "pages": [
+        "sdk/artifacts/add",
+        "sdk/artifacts/details",
+        "sdk/artifacts/fetch",
+        "sdk/artifacts/delete"
+      ]
+    },
+    {
+      "group": "Dataset",
+      "pages": [
+        "sdk/dataset/register",
+        "sdk/dataset/details",
+        "sdk/dataset/list",
+        "sdk/dataset/fetch",
+        "sdk/dataset/delete"
+      ]
+    },
+    {
+      "group": "Log",
+      "pages": ["sdk/log/log"]
+    },
+    {
+      "group": "Metrics",
+      "pages": ["sdk/metrics/add", "sdk/metrics/fetch", "sdk/metrics/delete"]
+    },
+    {
+      "group": "Model",
+      "pages": [
+        "sdk/model/register",
+        "sdk/model/details",
+        "sdk/model/list",
+        "sdk/model/fetch",
+        "sdk/model/delete"
+      ]
+    },
+    {
+      "group": "Params",
+      "pages": ["sdk/params/add", "sdk/params/fetch", "sdk/params/delete"]
     }
   ],
   "footerSocials": {
