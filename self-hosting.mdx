@@ -37,7 +37,6 @@ Want more reliability? The easiest way to get started with PureML is to use [Pur
        image: puremlhq/pureml_frontend:dev
        environment:
          - NEXT_PUBLIC_BACKEND_URL=http://backend:8080/api/
-         - NEXT_PUBLIC_AIRTABLE_API_KEY={YOUR_AIRTABLE_API_KEY}
        ports:
          - 3000:3000
        links:
@@ -57,13 +56,8 @@ Want more reliability? The easiest way to get started with PureML is to use [Pur
 4. Additionally, to run the containers in background you can use the command
    `docker compose up -d` or `docker compose up --detach`
 
-If all goes well, You should have a PureML local instance setup and running with your backend hosted at http://localhost:8080/api.
+If all goes well, You should have a PureML local instance setup and running PureML UI at [localhost:3000](https://localhost:3000) with your backend hosted at [localhost:8080/api](http://localhost:8080/api).
 You can even checkout the auto generated Open API swagger documentation at [/api/swagger/index.html](http://localhost:8080/api/swagger/index.html)
-
-<Warning>
-  Currently, frontend is not usable for self-hosted version. Support for that
-  will be added soon
-</Warning>
 
 ## Usage
 
@@ -89,7 +83,11 @@ There are various ways to configure and personalize your PureML instance to bett
 
 ### Environment variables
 
-<Info>Work in progress. Stay there, we will be updating it soon 😀.</Info>
+#### Frontend environment
+
+| Variable                | Description                         | Default Value            |
+| ----------------------- | ----------------------------------- | ------------------------ |
+| NEXT_PUBLIC_BACKEND_URL | backend url env to connect frontend | http://backend:8080/api/ |
 
 #### Backend environment
 
