@@ -25,14 +25,20 @@ import pandas as pd
 from pureml.decorators import dataset, transformer, load_data
 
 
-@load_data
+@load_data()
 def load_churn_data():
+    '''
+    Loads data
+    '''
     df = pd.read_csv('./bigml_59c28831336c6604c800002a.csv')
 
     return df
 
-@transformer
+@transformer()
 def encode_ordinal(df):
+    '''
+    Encode ordinal data
+    '''
     col_ord = ['state', 'phone number']
     df_ord = df[col_ord]
     feat = OrdinalEncoder().fit_transform(df_ord)
@@ -41,9 +47,11 @@ def encode_ordinal(df):
 
     return df
 
-@transformer
+@transformer()
 def encode_binary(df):
-
+    '''
+    Encode binary data
+    '''
     df['voice mail plan'] = df['voice mail plan'].map({'yes':1, 'no':0})
     df['international plan'] = df['international plan'].map({'yes':1, 'no':0})
     df['churn'] = df['churn'].map({True:1, False:0})
@@ -52,6 +60,9 @@ def encode_binary(df):
 
 @dataset('telecom_churn:dev')
 def build_dataset():
+    '''
+    None
+    '''
     df = load_churn_data()
 
     df = encode_ordinal(df)

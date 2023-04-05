@@ -12,7 +12,7 @@ import pureml
 data = ###
 lineage = ##@
 
-dataset = pureml.dataset.register(data, 'telecom churn', lineage, branch='dev')
+dataset = pureml.dataset.register(data, 'telecom churn:dev', lineage)
 ```
 
 `lineage` is required to register a dataset. Yours can utilize `@dataset` decorator to auto-generate data lineage.
@@ -41,13 +41,13 @@ Let's look at how to load the dataset:
 ```python
 import pureml
 
-dataset = pureml.dataset.fetch('telecom churn', branch='dev')
+dataset = pureml.dataset.fetch('telecom churn:dev')
 ```
 
 By default, `fetch` fetches `latest` version of the dataset. A particular version of a dataset can be fetched by providing `version` parameter as the following.
 
 ```python
-dataset = pureml.dataset.fetch('telecom churn', branch='dev', 'v2')
+dataset = pureml.dataset.fetch('telecom churn:dev:v2')
 ```
 
 Here, we have fetched the version `v2` of the dataset `telecom churn`.

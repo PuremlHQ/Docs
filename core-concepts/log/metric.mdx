@@ -1,0 +1,51 @@
+---
+title: Log Metrics and Params
+---
+
+To log metadata of a model from PureML package, use dictionary format with key representing the name of the field and the value representing the value of the field. Logged metadata will be associated with an existing model.
+
+## Logging inside model decorator
+
+Using `log` method, metrics and parameters can be added to a model version.
+
+```python
+from pureml.decorators import model
+import pureml
+
+@model('sales forecast:dev')
+def train_model():
+    #model = model training code
+    ....
+
+    pureml.log(metrics={'accuracy': 0.9, 'f1': 0.8}, params={'random_state': 42, 'channels': 3})
+
+    ...
+    return model
+```
+
+When `log` method is invoked inside the model decorator, the metrics, and parameters are added to the version of the model that is registered by the decorator. The model is named `sales forcast` in this case.
+
+## Logging outside the model decorator
+
+Logging can be done outside the model decorator in the following ways:
+
+```python
+pureml.log(metrics={'accuracy': 0.9, 'f1': 0.8}, params={'random_state': 42, 'channels': 3}, label='sales forecast:dev')
+```
+
+By default, log method adds the metadata to the latest version of the model. Metadata can be added to a particular version of a model by providing version parameter as the following:
+
+```python
+pureml.log(metrics={'accuracy': 0.9, 'f1': 0.8}, params={'random_state': 42, 'channels': 3}, label='sales forecast:dev:v3')
+```
+
+## Expected Output
+
+If executed successfully, PureML outputs the following:
+
+```python
+Metrics have been successfully registered.
+Params have been successfully registered.
+Model name: sales forecast
+Model Version: v3
+```

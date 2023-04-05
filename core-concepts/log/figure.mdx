@@ -1,0 +1,43 @@
+---
+title: Log Figures
+---
+
+**Coming Soon!!**
+
+PureML accepts matplotlib figures to be logged. These figures are converted to images before registering.
+
+## Logging inside the model decorator
+
+Using log method, matplotlib figures are added to a model version:
+
+```python
+from pureml.decorators import model
+import pureml
+
+@model('sales forecast:dev')
+def train_model():
+    #model = model training code
+    ....
+
+    fig = #matplotlib figure object
+    pureml.log(figure={'cnf_matrix':fig})
+
+    ...
+    return model
+```
+
+When `log` method is invoked inside the model decorator, the figures are added to the version of the model that is registered by the decorator.
+
+## Logging outside the model decorator
+
+Logging can be done outside the model decorator in the following ways:
+
+```python
+pureml.log(figure={'cnf_matrix':fig}, label='sales forecast:dev')
+```
+
+By default, log method adds the figure to the latest version of the model. It can be added to a particular version of a model by providing version parameter as the following:
+
+```python
+pureml.log(figure={'cnf_matrix':fig}, label='sales forecast:dev:v3')
+```

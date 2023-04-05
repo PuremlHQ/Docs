@@ -13,21 +13,29 @@ from sklearn.preprocessing import OrdinalEncoder
 import pandas as pd
 from pureml.decorators import dataset, model, transformer, load_data
 
-@load_data
+@load_data()
 def load_churn_data():
-df = pd.read_csv('/home/vamsidhar/Downloads/bigml_59c28831336c6604c800002a.csv')
+    '''
+    Loads churn data
+    '''
+    df = pd.read_csv('../bigml_59c28831336c6604c800002a.csv')
 
     return df
 
-@transformer
+@transformer()
 def encode_ordinal(df):
-df[df.columns] = OrdinalEncoder().fit_transform(df)
+    '''
+    Encode ordinal data
+    '''
+    df[df.columns] = OrdinalEncoder().fit_transform(df)
 
     return df
 
-@transformer
+@transformer()
 def encode_binary(df):
-
+    '''
+    Encode binary data
+    '''
     df['voice mail plan'] = df['voice mail plan'].map({'yes':1, 'no':0})
     df['international plan'] = df['international plan'].map({'yes':1, 'no':0})
     df['churn'] = df['churn'].map({True:1, False:0})
@@ -36,7 +44,10 @@ def encode_binary(df):
 
 @dataset('telecom churn:dev', parent=['encode ordinal', 'encode binary'])
 def build_dataset():
-df = load_churn_data()
+    '''
+    None
+    '''
+    df = load_churn_data()
 
     column_names = df.columns
 
@@ -48,6 +59,6 @@ df = load_churn_data()
 df = build_dataset()
 ```
 
-The above example generates the following pipeline structure.
+The above example generates the following pipeline structure:
 
 <img src="/images/lineage_advanced.png" alt="Advanced Lineage" />

@@ -47,7 +47,14 @@
       "pages": [
         "core-concepts/model",
         "core-concepts/dataset",
-        "core-concepts/log",
+        {
+          "group": "Log",
+          "pages": [
+            "core-concepts/log/log",
+            "core-concepts/log/metric",
+            "core-concepts/log/figure"
+          ]
+        },
         "core-concepts/lineage",
         "core-concepts/branch"
       ]
