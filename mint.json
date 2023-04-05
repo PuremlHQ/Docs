@@ -7,13 +7,17 @@
   },
   "favicon": "/favicon.png",
   "colors": {
-    "primary": "#0069ED",
-    "light": "#4D9CFF",
-    "dark": "#0050B4"
+    "primary": "#0E4DDD",
+    "light": "#2196f3",
+    "dark": "#0E4DDD"
   },
   "metadata": {
-    "og:image": "https://pureml.com/PureMLMetaImg.svg",
-    "twitter:site": "@puremlhq"
+    "og:logo": "/logo/PureMLLogo_Dark.svg",
+    "og:description": "The ultimate tool for managing your production machine learning workflow.",
+    "og:image": "/images/PureMLDocsMetaImg.png",
+    "twitter:logo": "/logo/PureMLLogo_Dark.svg",
+    "twitter:description": "The ultimate tool for managing your production machine learning workflow.",
+    "twitter:image": "/images/PureMLDocsMetaImg.png"
   },
   "topbarLinks": [],
   "topbarCtaButton": {

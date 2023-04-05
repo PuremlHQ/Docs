@@ -53,7 +53,7 @@ To register the model, add the `@model` decorator to the training function. Pure
 Let's also replace `print()` with `pureml.log()` to register obtained model metrics to the project.
 
 ```python
-@model('iris_classifier', 'dev')
+@model('iris_classifier:dev')
 def train():
     xgb_model = xgb.XGBClassifier()
     xgb_model.fit(X_train, y_train)
@@ -64,7 +64,7 @@ def train():
     pureml.log(metrics={'accuracy':acc})
     print("accuracy: ", acc)
 
-    return xgb_model 
+    return xgb_model
 
 xgb_model = train()
 ```
@@ -78,7 +78,7 @@ Let's look at how to load and generate predictions with your model:
 ```python
 import pureml
 
-model = pureml.model.fetch('iris_clasifier', 'dev')
+model = pureml.model.fetch('iris_clasifier:dev')
 X, y = load_iris(return_X_y=True)
 preds = model.predict(X)
 ```
@@ -86,7 +86,7 @@ preds = model.predict(X)
 By default, `fetch` method fetches `latest` version of the model. A particular `version` of a model can be fetched by providing version parameter as the following.
 
 ```python
-model = pureml.model.fetch('iris_classifier', 'dev', 'v3')
+model = pureml.model.fetch('iris_classifier:dev:v3')
 ```
 
 Here, we have fetched the version `v3` of the model `iris_classifier`.
@@ -99,4 +99,12 @@ print('Prediction: ', preds[0])
 
 By providing a comprehensive set of metrics and visualizations, PureML makes it easy to identify and correct any issues with its review feature and allows you to evaluate the quality of their data and the accuracy of their model. Owner can approve or reject to add in production.
 
-<iframe src="https://youtu.be/mbAlJJfB9Nc">Model Review</iframe>
+<iframe
+  width="100%"
+  height="405"
+  src="https://www.youtube.com/embed/mbAlJJfB9Nc"
+  title="Model Review"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  allowfullscreen
+></iframe>
