@@ -2,4 +2,85 @@
 title: Docker
 ---
 
-<Info>Work in progress. Stay there, we will be updating it soon 😀.</Info>
+PureML uses Docker-py to create containers for the models.
+
+## Installing Prerequisites
+
+Before you start creating the container for your model, install the following clients on your machine. If not explicitly specified, use the latest available version of the specified components.
+
+## Create your prediction function
+
+Refer to [Prediction Section](../prediction/versioning) on to how to create a prediction function and add it to a version of a model.
+
+## Creating Docker Container
+
+```python
+import pureml
+
+org_id = "<org id>"
+access_token = "<access_token>"
+
+pureml.docker.create(label='churn classifier:dev:v5', image_tag='churn_model_docker', org_id=org_id, access_token=access_token,)
+```
+
+## Expected Output
+
+If executed successfully, PureML returns the following message along with the URL where the model is hosted.
+
+```
+Taking the default predict.py file path:  <path to predict.py>
+Taking the requirements.txt file path:  < path to requirements.txt>
+FastAPI server files are created
+Docker image is created
+<Image: '<model name>:<model version>'>
+Created Docker container
+<Container: <container id>>
+Prediction requests can be forwarded to 0.0.0.0:8000/predict
+```
+
+The model is hosted at `0.0.0.0:8000/predict`. Users can get predictions by sending get requests to the API.
+
+## Sending Requests to the API
+
+### Using Requests
+
+The API call expects a parameter named `test_data` that contains data to be tested. This `data` will be passed on to the data parameter set in the `model_predict` function. PureML obtains the model specified in the `pureml.docker.create` command and sends it to themodel parameter of the `model_predict` function.
+
+```python
+import requests
+
+params = {'test_data': <test data>}
+headers = {'accept': 'application/json'}
+
+response = requests.get('http://0.0.0.0:8000/predict', params=params, headers=headers)
+predictions = response.json()
+```
+
+Predictions can be extracted from the json response.
+
+### Using Curl
+
+```Curl
+curl -X 'GET'  'http://0.0.0.0:8000/predict?test_data=<test data>' -H 'accept: application/json'
+```
+
+## Accepted Input and Output types
+
+The description of input and output data types is required to create the docker container. Here is the list of available data types:
+
+### Input datatypes
+
+The JSON data received by the API endpoint will convert the data into the required datatype specified by the user. For the image data type, API will load the received file though pillow library and convert it into a numpy ndarray before passing it into the prediction function.
+
+- [Numpy array](https://numpy.org/doc/stable/): 'numpy ndarray'
+- [Pandas dataframe](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html): 'pandas dataframe'
+- string: 'text
+- [Image](https://pillow.readthedocs.io/en/stable/reference/Image.html): 'image'
+
+### Output datatypes
+
+The model output will be converted into a JSON string and returned to the user upon an API call. Here are the supported output datatypes.
+
+- [Numpy array](https://numpy.org/doc/stable/): 'numpy ndarray
+- [Pandas dataframe](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html): 'pandas dataframe
+- string: 'text

@@ -14,10 +14,10 @@
   "metadata": {
     "og:logo": "/logo/PureMLLogo_Dark.svg",
     "og:description": "The ultimate tool for managing your production machine learning workflow.",
-    "og:image": "/images/PureMLDocsMetaImg.png",
+    "og:image": "https://github.com/PuremlHQ/PureML-docs/blob/main/images/PureMLDocsMetaImg.png?raw=true",
     "twitter:logo": "/logo/PureMLLogo_Dark.svg",
     "twitter:description": "The ultimate tool for managing your production machine learning workflow.",
-    "twitter:image": "/images/PureMLDocsMetaImg.png"
+    "twitter:image": "https://github.com/PuremlHQ/PureML-docs/blob/main/images/PureMLDocsMetaImg.png?raw=true"
   },
   "topbarLinks": [],
   "topbarCtaButton": {
@@ -43,11 +43,11 @@
   ],
   "navigation": [
     {
-      "group": "GETTING STARTED",
+      "group": "Getting Started",
       "pages": ["welcome", "introduction", "installation", "self-hosting"]
     },
     {
-      "group": "CORE CONCEPTS",
+      "group": "Core Concepts",
       "pages": [
         "core-concepts/model",
         "core-concepts/dataset",
@@ -64,7 +64,7 @@
       ]
     },
     {
-      "group": "VERSION",
+      "group": "Version",
       "pages": [
         "version/version-model",
         "version/version-dataset",
@@ -73,12 +73,16 @@
       ]
     },
     {
-      "group": "EVALUATE",
+      "group": "Prediction",
+      "pages": ["prediction/versioning", "prediction/input-output-types"]
+    },
+    {
+      "group": "Evaluate",
       "pages": ["evaluate/create-your-first-evaluation", "evaluate/example"]
     },
     {
-      "group": "PACKAGE",
-      "pages": ["package/docker", "package/fastapi"]
+      "group": "Package",
+      "pages": ["package/docker", "package/fastapi", "package/streamlit"]
     },
     {
       "group": "Artifacts",

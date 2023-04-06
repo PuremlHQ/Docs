@@ -1,0 +1,77 @@
+---
+title: Versioning
+---
+
+For registered models, prediction function along with its requirements and resources can be logged to be used for further processes like evaluating and packaging.
+
+## Prediction Class
+
+PureML expects the prediction function in a specific format:
+
+```python
+from pureml import BasePredictor, Input, Output
+import pureml
+
+class Predictor(BasePredictor):
+    label = "<model_name:model_branch:model_version>"
+    input = Input(type="<Input data type>")
+    output = Output(type="<Output data type>")
+
+    def load_models(self):
+        self.model = #Load the model to this variable
+
+    def predict(self, data):
+        predictions = # Code to obtain model predictions
+
+        return predictions
+```
+
+<Info>
+  This is a template for writing Predictor class. PureML expects this format for
+  the class to use for evaluation, packaging of models etc.
+</Info>
+
+Let's look at the Structure of the `Predictor` class
+`Predictor` inherits the `BasePredictor` which contains variables and abstract methods that have to be overwritten by the user.
+
+<Info>The class name should be `Predictor`.</Info>
+
+### Variables
+
+`label` : Contains the label for the model version
+`input` : Contains the input data type that is passed into `predict` function
+`output`: Contains the data type of the output returned by the `predict` function
+
+### Functions
+
+`load_models`: Contains the functionality to load the prediction model
+`predict`: Contains the functionality to obtain the predictions on the `data` passed to the function.
+
+<Info>
+  Apart from the above-mentioned variables, and functions, user can add more
+  functionality to the `Predictor` class
+</Info>
+
+## Logging Prediction
+
+```python
+import pureml
+
+pureml.predict.add(label='<model_name:model_branch:model_version>', paths={'predict': './predict.py'})
+```
+
+Logging Prediction function along with its requirements:
+
+```python
+import pureml
+
+pureml.predict.add(label='<model_name:model_branch:model_version>', paths={'predict': './predict.py', 'requirements': './requirements.txt', 'resources': './'})
+```
+
+## Fetching the model
+
+```python
+import pureml
+
+pureml.predict.fetch(label='<model_name:model_branch:model_version>')
+```

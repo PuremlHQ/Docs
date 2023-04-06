@@ -2,4 +2,42 @@
 title: Create your first Evaluation
 ---
 
-<Info>Work in progress. Stay there, we will be updating it soon 😀.</Info>
+### Create prediction function
+
+Refer to [Prediction Section](../prediction/versioning) on to how to create a prediction function and add it to a version of a model.
+
+### Create validation dataset
+
+PureML expects the dataset version to be used for validation in a specific manner.
+
+### Run your first evaluation
+
+```python
+from pureml.decorators import dataset
+
+@dataset("<dataset_branch:dataset_version>")
+def create_validation_dataset():
+    x_test = #Data for testing
+    y_test = #Labels for testing
+
+    return {"x_test":x_test, "y_test":y_test}
+```
+
+<Info>
+  Any dataset that is intended to be used in model validation should be
+  registered in a dictionary format with mandatory keys; "x_test" for testing
+  data, and "y_test" for dataset labels.
+</Info>
+
+### Running Evaluator
+
+```python
+import pureml
+
+pureml.eval(task_type='classification', label_dataset='<dataset_name:dataset_branch:dataset_version>', label_model='<model_name:model_branch:model_version>')
+```
+
+<Info>
+  PureML supports two task types for evaluation, "classification", and
+  "regression".
+</Info>

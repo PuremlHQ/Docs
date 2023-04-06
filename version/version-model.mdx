@@ -34,14 +34,14 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
 
 ```python
 def train():
-    xgb_model = xgb.XGBClassifier()
-    xgb_model.fit(X_train, y_train)
-    predictions = xgb_model.predict(X_test)
+  xgb_model = xgb.XGBClassifier()
+  xgb_model.fit(X_train, y_train)
+  predictions = xgb_model.predict(X_test)
 
-    acc = accuracy(y_test, predictions)
-    print("accuracy: ", acc)
+  acc = accuracy(y_test, predictions)
+  print("accuracy: ", acc)
 
-    return xgb_model
+  return xgb_model
 
 xgb_model = train()
 ```
