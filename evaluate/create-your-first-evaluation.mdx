@@ -15,7 +15,7 @@ PureML expects the dataset version to be used for validation in a specific manne
 ```python
 from pureml.decorators import dataset
 
-@dataset("<dataset_branch:dataset_version>")
+@dataset("<dataset_name:dataset_branch>")
 def create_validation_dataset():
     x_test = #Data for testing
     y_test = #Labels for testing

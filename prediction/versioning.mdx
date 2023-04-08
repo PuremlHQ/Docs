@@ -31,7 +31,8 @@ class Predictor(BasePredictor):
   the class to use for evaluation, packaging of models etc.
 </Info>
 
-Let's look at the Structure of the `Predictor` class
+Let's look at the Structure of the `Predictor` class.
+
 `Predictor` inherits the `BasePredictor` which contains variables and abstract methods that have to be overwritten by the user.
 
 <Info>The class name should be `Predictor`.</Info>
@@ -39,12 +40,15 @@ Let's look at the Structure of the `Predictor` class
 ### Variables
 
 `label` : Contains the label for the model version
+
 `input` : Contains the input data type that is passed into `predict` function
+
 `output`: Contains the data type of the output returned by the `predict` function
 
 ### Functions
 
 `load_models`: Contains the functionality to load the prediction model
+
 `predict`: Contains the functionality to obtain the predictions on the `data` passed to the function.
 
 <Info>
