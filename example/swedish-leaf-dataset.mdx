@@ -1,0 +1,305 @@
+---
+title: Swedish Leaf Dataset
+---
+
+## Installation
+
+`pip install pureml`
+
+## Preparing requirements.txt
+
+```
+pandas==1.4.3
+numpy==1.23.1
+xgboost==1.7.2
+scikit-learn==1.2.0
+```
+
+We recommend storing ORG_ID, and ACCESS_TOKEN in a .env file so as not to expose them.
+
+## Configuring .env
+
+Before starting, its important to configure `.env` so you can set the local environment for your personal use.
+
+```
+ORG_ID=<org id>
+ACCESS_TOKEN=<access token>
+```
+
+## Get ready with dataset
+
+Download your dataset from [here](https://www.cvl.isy.liu.se/en/research/datasets/swedish-leaf/).
+
+```python
+import numpy as np
+from skimage.feature import graycomatrix, graycoprops
+from sklearn.model_selection import train_test_split
+
+import cv2
+import os
+from pureml.decorators import load_data, transformer, dataset, model
+import pandas as pd
+```
+
+```python
+@load_data()
+def load_images(df):
+    path_dir = './leaf_datasets_data/swedish-leaf/images' #change the location where your dataset exists
+
+    filepath = []
+    for root, dirs, files in os.walk(path_dir):
+        for file in files:
+            filepath.append(os.path.join(root,file))
+
+    df['filepath'] = pd.Series(filepath)
+
+    df['image'] = df.filepath.apply(lambda x : cv2.imread(x))
+    df['label'] = df.filepath.apply(lambda x : int(x.split('/')[-2].strip('leaf')))
+
+    df = df.dropna(axis=0, subset=['image'])
+
+    return df
+
+@transformer()
+def resize_images(df, size):
+
+    df['image'] = df.image.apply(lambda x: cv2.resize(x, (size, size)))
+
+    return df
+
+@transformer()
+def generate_foreground_mask(df):
+
+    def get_mask(row):
+        img = row.image
+        sat = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)[:,:,0]
+        mask = np.zeros((sat.shape[0], sat.shape[1]), np.uint8)
+
+        ret,thresh = cv2.threshold(sat,20,255,0)
+        contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+        if len(contours)>0:
+            contours_max = max(contours, key = cv2.contourArea)
+            cv2.drawContours(mask,[contours_max],0,255,-1)
+
+        return mask, contours
+
+    df[['mask','contours']] = df.apply(get_mask, axis=1, result_type ='expand')
+
+    return df
+
+@transformer(parent='resize_images')
+def convert_to_grayscale(df):
+    df['gray'] = df.image.apply(lambda x: cv2.cvtColor(x, cv2.COLOR_BGR2GRAY))
+
+    return df
+
+@transformer(parent=['generate_foreground_mask'])
+def generate_color_features(df):
+
+    def get_features(row):
+        gray = row.gray
+
+        mean, std = cv2.meanStdDev(gray)
+        mean, std = np.array(mean), np.array(std)
+        min_v = np.array(gray.min())
+        max_v = np.array(gray.max() )
+        hist = cv2.calcHist([gray],[0], None, [32], [0,256])
+
+        feat = np.concatenate((mean.reshape(-1), std.reshape(-1), min_v.reshape(-1), max_v.reshape(-1), hist.reshape(-1)))
+
+        return feat
+
+    df['color'] = df.apply(get_features, axis=1)
+
+    return df
+
+@transformer(parent='convert_to_grayscale')
+def generate_texture_features(df):
+
+    def get_features(gray):
+
+        gray = np.array((gray/8), np.uint8)
+        glcm = graycomatrix(gray, distances=[2], angles=[0],levels=32, normed=True, symmetric=True)
+        mean, std = cv2.meanStdDev(glcm)
+        mean, std = np.array(mean), np.array(std)
+        contrast = graycoprops(glcm, 'contrast')
+        corelation = graycoprops(glcm, 'correlation')
+        homogeneity = graycoprops(glcm, 'homogeneity')
+        diss = graycoprops(glcm, 'dissimilarity')
+        eng = graycoprops(glcm, 'energy')
+        ASM = graycoprops(glcm, 'ASM')
+
+        feat = np.concatenate((mean.reshape(-1), std.reshape(-1), contrast.reshape(-1), corelation.reshape(-1),
+                               homogeneity.reshape(-1), diss.reshape(-1), eng.ravel(), ASM.ravel()))
+        return feat
+
+    df['texture'] = df.gray.apply(get_features)
+
+    return df
+
+@transformer(parent=['convert_to_grayscale'])
+def generate_shape_features(df):
+
+    def get_features(row):
+        contours = row.contours
+        gray = row.gray
+
+        area = np.array(cv2.contourArea(contours[0]))
+        perimeter = np.array(cv2.arcLength(contours[0], True))
+
+        (x,y),radius = cv2.minEnclosingCircle(contours[0])
+        radius = np.array(radius)
+
+        moments = cv2.HuMoments(cv2.moments(gray)).flatten()
+
+        hull = np.array(cv2.convexHull(contours[0]))
+        hull_area = np.array(cv2.contourArea(hull))
+
+        feat = np.concatenate((area.reshape(-1), perimeter.reshape(-1), radius.reshape(-1),
+                               moments.reshape(-1),hull_area.reshape(-1)))
+
+        return feat
+
+    df['shape'] = df.apply(get_features, axis=1)
+
+    return df
+
+@transformer(parent=['generate_shape_features', 'generate_color_features', 'generate_texture_features'])
+def generate_features(df):
+
+    def get_feature(row):
+
+        feature = np.concatenate([row['color'], row['shape'], row['texture']])
+
+        return feature
+
+    df['feature'] = df.apply(get_feature, axis=1)
+
+    return df
+
+@transformer(parent='generate_features')
+def split_data(df):
+    x_train, x_test,  y_train, y_test = train_test_split(df['feature'].values, df['label'].values, test_size=0.2, random_state=42)
+
+    x_train = np.stack(x_train, axis=0)
+    x_test = np.stack(x_test, axis=0)
+    y_train = np.stack(y_train, axis=0)
+    y_test = np.stack(y_test, axis=0)
+
+    return x_train, x_test,  y_train, y_test
+
+@dataset(label='flavia_handcrafted_features:dev_2',parent='split_data', upload=True)
+def create_dataset():
+    columns_all = ['filepath','image', 'label', 'mask', 'gray', 'contours', 'color', 'shape', 'texture', 'feature']
+    columns_needed = ['feature','label']
+
+    df = pd.DataFrame(columns=columns_all)
+
+    df = load_images(df)
+
+    df = resize_images(df, size=128)
+
+    df = generate_foreground_mask(df)
+
+    df = convert_to_grayscale(df)
+
+    df = generate_color_features(df)
+
+    df = generate_texture_features(df)
+
+    df = generate_shape_features(df)
+
+    df = generate_features(df)
+
+    df = df[columns_needed]
+
+    x_train, x_test,  y_train, y_test = split_data(df)
+
+    return {"x_train":x_train, "x_test":x_test,  "y_train":y_train, "y_test":y_test}
+
+data = create_dataset()
+x_train, x_test = data["x_train"], data["x_test"]
+y_train, y_test = data["y_train"], data["y_test"]
+```
+
+## Get ready with model
+
+```python
+from pytorch_tabnet.tab_model import TabNetClassifier
+import torch.optim as optim
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+import pureml
+```
+
+```python
+@model('flavia_tabnet_classifier:dev_2')
+def train_model():
+
+    tabnet_params = dict(
+        gamma = 1.5,
+        lambda_sparse = 0,
+
+        optimizer_fn = optim.Adam,
+        optimizer_params = dict(lr = 2.5e-2, weight_decay = 1e-6),
+
+        mask_type = "entmax",
+        scheduler_params = dict(
+            mode = "min", patience = 5, min_lr = 1e-5, factor = 0.5),
+        scheduler_fn = ReduceLROnPlateau,
+        seed = 42,
+        verbose = 10
+    )
+
+    epochs = 60
+    batch_size = 32
+
+    tabnet = TabNetClassifier(**tabnet_params)
+
+    tabnet.fit(x_train, y_train,
+            eval_set = [(x_test, y_test)],
+            max_epochs = epochs,
+            batch_size = batch_size,
+            patience = 12,
+            eval_metric=['accuracy', 'balanced_accuracy', 'logloss']
+            #device_name = DEVICE
+    )
+
+    pureml.log(
+        metrics = tabnet.history.epoch_metrics,
+        params = {
+            'gamma': tabnet_params['gamma'],
+            'lr': tabnet_params['optimizer_params']['lr'],
+            'mask_type': tabnet_params['mask_type'],
+            'scheduler_fn': 'ReduceLROnPlateau',
+            'seed': tabnet_params['seed'],
+            'epochs': epochs,
+            'batch_size':batch_size}
+        )
+
+    return tabnet
+
+tabnet = train_model()
+```
+
+## Prediction
+
+```python
+import pureml
+
+pureml.predict.add(label="flavia_tabnet_classifier:dev_2:v1", paths={"predict": "./predict.py", "requirements":"./requirements.txt"})
+```
+
+## Evaluation
+
+```python
+import pureml
+pureml.eval(task_type='classification', label_model='flavia_tabnet_classifier:dev_2:v1', label_dataset='flavia_handcrafted_features:dev_2:v1')
+```
+
+## Deploy to FastAPI
+
+```python
+import pureml
+
+pureml.fastapi.run('flavia_tabnet_classifier:dev_2:v1')
+```

@@ -85,6 +85,10 @@
       "pages": ["package/docker", "package/fastapi", "package/streamlit"]
     },
     {
+      "group": "Examples",
+      "pages": ["example/swedish-leaf-dataset"]
+    },
+    {
       "group": "Artifacts",
       "pages": [
         "sdk/artifacts/add",

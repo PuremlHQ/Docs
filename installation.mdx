@@ -23,8 +23,7 @@ This command will prompt you to enter your email, user handle, name, and passwor
 
 ## Sign In to start what you left
 
-If you already have a PureML account, you can log in using 3 different ways:
-### 1. CLI
+If you already have a PureML account, you can log in using below method:
 
 The `pureml` command line utility:
 
@@ -34,18 +33,9 @@ pureml auth login
 
 This command will prompt you to PureML UI. Add your sign in credentials and you should see successful login on entering correct credentials.
 
-### 2. SDK
-
-You can sign in to PureML using our Python SDK:
-
-```python
-import pureml
-
-pureml.login(org_id='<org_id>', access_token='<access_token>')
-```
-
-### 3. PureML UI
-
-For cloud users, go to `https://pureml.com/auth/signin` to sign in through your sign in credentials. For self hosted users, go to `http://localhost:3000/auth/signin`
+<Info>
+  Go to `https://pureml.com/auth/signin` to sign in through your sign in
+  credentials.
+</Info>
 
 Once you're logged in, you'll be able to view your datasets, models, and other assets using the PureML platform.
