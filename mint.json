@@ -86,7 +86,7 @@
     },
     {
       "group": "Examples",
-      "pages": ["example/swedish-leaf-dataset"]
+      "pages": ["examples/swedish-leaf-dataset"]
     },
     {
       "group": "Artifacts",

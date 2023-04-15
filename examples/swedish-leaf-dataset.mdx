@@ -4,24 +4,27 @@ title: Swedish Leaf Dataset
 
 ## Installation
 
-`pip install pureml`
+Lets get started by installing PureML to work on Swedish Leaf Dataset.
+
+```bash
+pip install pureml
+```
 
 ## Preparing requirements.txt
 
-```
+```properties
 pandas==1.4.3
 numpy==1.23.1
 xgboost==1.7.2
 scikit-learn==1.2.0
 ```
 
-We recommend storing ORG_ID, and ACCESS_TOKEN in a .env file so as not to expose them.
-
 ## Configuring .env
 
 Before starting, its important to configure `.env` so you can set the local environment for your personal use.
+We recommend storing ORG_ID, and ACCESS_TOKEN in a .env file so as not to expose them.
 
-```
+```properties
 ORG_ID=<org id>
 ACCESS_TOKEN=<access token>
 ```
@@ -224,6 +227,8 @@ y_train, y_test = data["y_train"], data["y_test"]
 
 ## Get ready with model
 
+With the PureML model module, you can perform a variety of actions related to creating and managing models and branches. PureML assists you with training and tracking all of your machine learning project information, including ML models and datasets, using semantic versioning and full artifact logging.
+
 ```python
 from pytorch_tabnet.tab_model import TabNetClassifier
 import torch.optim as optim
@@ -281,25 +286,45 @@ def train_model():
 tabnet = train_model()
 ```
 
-## Prediction
+## Add prediction to your model
+
+For registered models, prediction function along with its requirements and resources can be logged to be used for further processes like evaluating and packaging.
 
 ```python
 import pureml
 
-pureml.predict.add(label="flavia_tabnet_classifier:dev_2:v1", paths={"predict": "./predict.py", "requirements":"./requirements.txt"})
+pureml.predict.add(label="flavia_tabnet_classifier:dev_2:v1",
+                   paths={"predict": "./predict.py", "requirements":"./requirements.txt"})
 ```
 
-## Evaluation
+## Create your first Evaluation
 
 ```python
 import pureml
-pureml.eval(task_type='classification', label_model='flavia_tabnet_classifier:dev_2:v1', label_dataset='flavia_handcrafted_features:dev_2:v1')
+pureml.eval(task_type='classification',
+            label_model='flavia_tabnet_classifier:dev_2:v1',
+            label_dataset='flavia_handcrafted_features:dev_2:v1')
 ```
 
-## Deploy to FastAPI
+## Deploy with FastAPI
+
+You evaluated model can now be deployed using FastAPI simply with below commands:
 
 ```python
 import pureml
 
 pureml.fastapi.run('flavia_tabnet_classifier:dev_2:v1')
+```
+
+## Deploy using Docker
+
+Alternatively, you can also use Docker for deployment:
+
+```python
+import pureml
+
+pureml.docker.create(label=<model_label>',
+                     org_id=<org_id>,
+                     access_token=<access_token>,
+                     sys_commands=sys_commands)
 ```

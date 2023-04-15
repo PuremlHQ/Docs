@@ -8,6 +8,10 @@ PureML uses Docker-py to create containers for the models.
 
 Before you start creating the container for your model, install the following clients on your machine. If not explicitly specified, use the latest available version of the specified components.
 
+<Card icon="link" href="https://docs.docker.com/engine/install/">
+  Download docker from here.
+</Card>
+
 ## Create your prediction function
 
 Refer to [Prediction Section](../prediction/versioning) on to how to create a prediction function and add it to a version of a model.
@@ -20,7 +24,10 @@ import pureml
 org_id = "<org id>"
 access_token = "<access_token>"
 
-pureml.docker.create(label='churn classifier:dev:v5', image_tag='churn_model_docker', org_id=org_id, access_token=access_token,)
+pureml.docker.create(label='churn classifier:dev:v5',
+                     image_tag='churn_model_docker',
+                     org_id=org_id,
+                     access_token=access_token,)
 ```
 
 ## Expected Output
@@ -29,7 +36,7 @@ If executed successfully, PureML returns the following message along with the UR
 
 ```
 Taking the default predict.py file path:  <path to predict.py>
-Taking the requirements.txt file path:  < path to requirements.txt>
+Taking the requirements.txt file path:  <path to requirements.txt>
 FastAPI server files are created
 Docker image is created
 <Image: '<model name>:<model version>'>
@@ -52,7 +59,9 @@ import requests
 params = {'test_data': <test data>}
 headers = {'accept': 'application/json'}
 
-response = requests.get('http://0.0.0.0:8000/predict', params=params, headers=headers)
+response = requests.get('http://0.0.0.0:8000/predict',
+                        params=params, headers=headers)
+
 predictions = response.json()
 ```
 

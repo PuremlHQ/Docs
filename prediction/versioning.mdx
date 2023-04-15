@@ -61,7 +61,8 @@ Let's look at the Structure of the `Predictor` class.
 ```python
 import pureml
 
-pureml.predict.add(label='<model_name:model_branch:model_version>', paths={'predict': './predict.py'})
+pureml.predict.add(label='<model_name:model_branch:model_version>',
+                   paths={'predict': './predict.py'})
 ```
 
 Logging Prediction function along with its requirements:
@@ -69,7 +70,8 @@ Logging Prediction function along with its requirements:
 ```python
 import pureml
 
-pureml.predict.add(label='<model_name:model_branch:model_version>', paths={'predict': './predict.py', 'requirements': './requirements.txt', 'resources': './'})
+pureml.predict.add(label='<model_name:model_branch:model_version>',
+                   paths={'predict': './predict.py', 'requirements': './requirements.txt', 'resources': './'})
 ```
 
 ## Fetching the model
