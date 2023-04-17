@@ -1,6 +1,6 @@
 ---
-title: Installation
-description: Install PureML, use decorators & TADAAA!!
+title: Overview
+description: Self Host in your system in quick steps!
 ---
 
 To get started with PureML, you'll need to install the PureML Python SDK. This SDK will allow you to work with the PureML platform, from creating your account to deploying your models.
@@ -21,7 +21,12 @@ If you're new to PureML, you'll need to sign up for an account before you can st
 
 <Tabs>
   <Tab title="Windows">
-    Directly start using `pureml` command and its features:
+    1. Run `pureml init` command to setup the puremlconfig.yml file.
+    2. CLI promt to know if user is using self-hosting
+    - If yes then enter `Y`
+    - If no then enter `N`
+    3. Give the self-hosted backend and frontend url.
+    > If no changes are made to ports or domains (using localhost) then go ahead and click enter to use the default values
 
     <CodeGroup>
 
@@ -35,9 +40,13 @@ If you're new to PureML, you'll need to sign up for an account before you can st
   </Tab>
   <Tab title="Mac/Linux">
     1. Set environment variable to use PureML CLI.
-
-    2. Run below command to start
-
+    2. Run `pureml init` command to setup the puremlconfig.yml file.
+    3. CLI promt to know if user is using self-hosting
+    - If yes then enter `Y`
+    - If no then enter `N`
+    4. Give the self-hosted backend and frontend url.
+    > If no changes are made to ports or domains (using localhost) then go ahead and click enter to use the default values
+    5. Run below command to start
     <CodeGroup>
 
     ```bash >_ Terminal
@@ -65,22 +74,23 @@ pureml auth login
 </CodeGroup>
 
 This command will prompt you to PureML UI. Add your sign in credentials and you should see successful login on entering correct credentials.
-Once you're logged in, you'll be able to view your datasets, models, and other assets using the PureML platform.
 
 <Info>
   Go to `https://pureml.com/auth/signin` to sign in through your sign in
   credentials.
 </Info>
 
+Once you're logged in, you'll be able to view your datasets, models, and other assets using the PureML platform.
+
 ### Using API Token
 
 Go to API Token section in user account settings page on PureML UI here (or using your self-hosted URL if any).
 
-<img src="images/Settings_APITokenList.png" alt="ListAPIToken" />
+{/* <img src="images/Settings_APITokenList.png" alt="ListAPIToken" /> */}
 
 Create a new API Token. Copy the API Id and API Secret and save them somewhere safe. The API secret will never be shown again.
 
-<img src="images/Settings_APITokenCreate.png" alt="CreateAPIToken" />
+{/* <img src="images/Settings_APITokenCreate.png" alt="CreateAPIToken" /> */}
 
 Go to your organization settings page to get your organization id. This will be useful in the next step.
 
@@ -107,7 +117,3 @@ Go to your organization settings page to get your organization id. This will be 
 
   </Tab>
 </Tabs>
-
-<Card title="🎉 PureML Up & running!" href="/core-concepts/model">
-  Get ready to play with your data by starting with your first model.
-</Card>

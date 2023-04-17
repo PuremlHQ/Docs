@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "PureML",
+  "name": "PureML Docs",
   "logo": {
     "dark": "/logo/PureMLLogo_Light.png",
     "light": "/logo/PureMLLogo_Dark.svg"
@@ -44,7 +44,11 @@
   "navigation": [
     {
       "group": "Getting Started",
-      "pages": ["welcome", "introduction", "installation", "self-hosting"]
+      "pages": ["welcome", "introduction", "installation"]
+    },
+    {
+      "group": "Self Hosting",
+      "pages": ["self-hosting/overview", "self-hosting/configuration"]
     },
     {
       "group": "Core Concepts",
