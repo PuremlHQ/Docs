@@ -2,86 +2,9 @@
 title: Configuration
 ---
 
-If you`re a large company looking for a proof-of-concept, or an engineer looking to use the open-source version in a funky non-production way, then you're in the right place! Our Docker compose deployment let's you spin up a fresh Pureml instance in minutes.
-
-Want more reliability? The easiest way to get started with PureML is to use [PureML Cloud](https://pureml.com/).
-
-<Info>
-  Self-hosted open-source deployment is Apache-2.0 licensed and provided without
-  a guarantee.
-</Info>
-
-## Requirements
-
-- A subsystem with docker-engine installed. [Installation guidelines](https://docs.docker.com/engine/install/)
-
-## Setting up the compose
-
-1. In a new directory where you want to setup the containers, create a new file `docker-compose.yml`
-2. Add the following content from our [official docker-compose example file](https://raw.githubusercontent.com/PuremlHQ/PureML/main/packages/pureml_docker/docker-compose.yml)
-
-   ```yml
-   version: "3"
-
-   services:
-     backend:
-       image: puremlhq/pureml_backend:local-base
-       environment:
-         - PURE_SITE_BASE_URL=http://localhost:3000
-       ports:
-         - 8080:8080
-       volumes:
-         - pureml-data:/pureml_backend/data
-
-     frontend:
-       image: puremlhq/pureml_frontend:dev
-       environment:
-         - NEXT_PUBLIC_BACKEND_URL=http://backend:8080/api/
-       ports:
-         - 3000:3000
-       links:
-         - backend
-
-   volumes:
-     pureml-data:
-   ```
-
-3. Run the following command to start your containers
-   `docker compose up`
-
-   <Note>
-     Make sure your docker engine is running for the docker command to work.
-   </Note>
-
-4. Additionally, to run the containers in background you can use the command
-   `docker compose up -d` or `docker compose up --detach`
-
-If all goes well, You should have a PureML local instance setup and running PureML UI at [localhost:3000](https://localhost:3000) with your backend hosted at [localhost:8080/api](http://localhost:8080/api).
-You can even checkout the auto generated Open API swagger documentation at [/api/swagger/index.html](http://localhost:8080/api/swagger/index.html)
-
-## Usage
-
-You can use your local self-hosted backend in the sdk by using the `set_backend` function
-Example:
-
-<Note>
-  Assuming your backend url is [_localhost:8080/api_](http://localhost:8080/api)
-</Note>
-
-```python
-import pureml
-
-# Call this function near the initialization of your scripts, preferably just after importing
-pureml.set_backend("http://localhost:8080/api/") # trainling slash at the end is important
-
-...
-```
-
-## Configuration
-
 There are various ways to configure and personalize your PureML instance to better suit your needs. In this section you will find all the information you need about settings and options you can configure to get what you need out of PureML.
 
-### Environment variables
+## Environment variables
 
 #### Frontend environment
 
@@ -108,3 +31,124 @@ _Rows with a missing 'Default Value' usually default to an empty string. This is
 | DATABASE_URL | url for the database (❗**Required** if database type is postgres) | |
 | CGO_ENABLED | whether to use cgo (requires gcc) or pure go | 1 |
 | PURE_SITE_BASE_URL | frontend url for email redirections | |
+
+## New to PureML?
+
+If you're new to PureML, you'll need to sign up for an account before you can start using the platform. CLI supports you to signup. You can do this using the `pureml` command line utility:
+
+<Tabs>
+  <Tab title="Windows">
+    1. Run `pureml init` command to setup the puremlconfig.yml file.
+    2. CLI promt to know if user is using self-hosting
+    - If yes then enter `Y`
+    - If no then enter `N`
+    3. Give the self-hosted backend and frontend url.
+    > If no changes are made to ports or domains (using localhost) then go ahead and click enter to use the default values
+
+    <CodeGroup>
+
+    ```bash >_ Terminal
+    pureml auth signup
+    ```
+    </CodeGroup>
+
+    This command will prompt you to enter your email, user handle, name, and password to create your PureML account. Once you register your details successfully, you will receive a verification mail on registered email Id to verify and proceed for login.
+
+  </Tab>
+  <Tab title="Mac/Linux">
+    1. Set environment variable to use PureML CLI.
+    2. Run `pureml init` command to setup the puremlconfig.yml file.
+    3. CLI promt to know if user is using self-hosting
+    - If yes then enter `Y`
+    - If no then enter `N`
+    4. Give the self-hosted backend and frontend url.
+    > If no changes are made to ports or domains (using localhost) then go ahead and click enter to use the default values
+    5. Run below command to start
+    <CodeGroup>
+
+    ```bash >_ Terminal
+    pureml auth signup
+    ```
+    </CodeGroup>
+
+    This command will prompt you to enter your email, user handle, name, and password to create your PureML account. Once you register your details successfully, you will receive a verification mail on registered email Id to verify and proceed for login.
+
+  </Tab>
+</Tabs>
+
+## Sign In to start what you left
+
+If you already have a PureML account, you can log in using below method:
+
+The `pureml` command line utility:
+
+<CodeGroup>
+
+```bash >_ Terminal
+pureml auth login
+```
+
+</CodeGroup>
+
+This command will prompt you to PureML UI. Add your sign in credentials and you should see successful login on entering correct credentials.
+
+<Info>
+  Go to `https://pureml.com/auth/signin` to sign in through your sign in
+  credentials.
+</Info>
+
+Once you're logged in, you'll be able to view your datasets, models, and other assets using the PureML platform.
+
+### Using API Token
+
+Go to API Token section in user account settings page on PureML UI here (or using your self-hosted URL if any).
+
+{/* <img src="images/Settings_APITokenList.png" alt="ListAPIToken" /> */}
+
+Create a new API Token. Copy the API Id and API Secret and save them somewhere safe. The API secret will never be shown again.
+
+{/* <img src="images/Settings_APITokenCreate.png" alt="CreateAPIToken" /> */}
+
+Go to your organization settings page to get your organization id. This will be useful in the next step.
+
+<Tabs>
+  <Tab title="SDK">
+    While using the SDK after importing use the login function to login using API Token as below:
+
+    ```python
+    import pureml
+
+    pureml.login(org_id="ENTER_YOUR_ORG_ID", api_id="ENTER_API_ID", api_key="ENTER_API_KEY")
+    ```
+
+  </Tab>
+  <Tab title="CLI">
+    You can use CLI to signin using API token by:
+
+    <CodeGroup>
+
+    ```bash >_ Terminal
+    pureml auth login --api-key
+    ```
+    </CodeGroup>
+
+  </Tab>
+</Tabs>
+
+## Usage
+
+You can use your local self-hosted backend in the sdk by using the `set_backend` function
+Example:
+
+<Note>
+  Assuming your backend url is [_localhost:8080/api_](http://localhost:8080/api)
+</Note>
+
+```python
+import pureml
+
+# Call this function near the initialization of your scripts, preferably just after importing
+pureml.set_backend("http://localhost:8080/api/") # trainling slash at the end is important
+
+...
+```
