@@ -8,9 +8,19 @@ PureML uses Docker-py to create containers for the models.
 
 Before you start creating the container for your model, install the following clients on your machine. If not explicitly specified, use the latest available version of the specified components.
 
-<Card icon="link" href="https://docs.docker.com/engine/install/">
-  Download docker from here.
-</Card>
+<Tabs>
+  <Tab title="CPU">
+    <Card title="Download docker" icon="link" href="https://docs.docker.com/engine/install/">
+       Docker Engine is an open source containerization technology for building and containerizing your applications.
+    </Card>
+
+  </Tab>
+  <Tab title="GPU">
+  <Card title="Download container toolkit" icon="link" href="https://catalog.ngc.nvidia.com/orgs/nvidia/teams/k8s/containers/container-toolkit">
+      NVIDIA container toolkit is a wrapper around a docker container to provide access to system GPUs for the container.
+    </Card>
+  </Tab>
+</Tabs>
 
 ## Create your prediction function
 
@@ -18,16 +28,50 @@ Refer to [Prediction Section](../prediction/versioning) on to how to create a pr
 
 ## Creating Docker Container
 
+<Tabs>
+  <Tab title="CPU">
+    ```python
+    import pureml
+
+    org_id = "<org id>"
+    access_token = "<access_token>"
+
+    pureml.docker.create(label='churn classifier:dev:v5',
+                         org_id=org_id,
+                         access_token=access_token,)
+    ```
+
+  </Tab>
+  <Tab title="GPU">
+    If you are creating a container for the model that needs GPU container which needs GPU access, then you need to pass on additional parameters in `pureml.docker.create` command as shown below:
+
+    ```python
+    import pureml
+
+    pureml.docker.create('flavia_tabnet_classifier:dev_2:v1',
+                         org_id=org_id,
+                         access_token=access_token,
+                         runtime="nvidia",
+                         gpu_ids=[0])
+    ```
+    <Info> PureML utilises NVIDIA container toolkit to provide access to system [GPUs in the container](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/k8s/containers/container-toolkit).</Info>
+
+    > In above code, only GPU with id 0 is used, if you want to use multiple GPUs available in your system then you should specify it with a separate id `gpu_ids=[0,1,2,..]`.
+
+  </Tab>
+</Tabs>
+
+### Changing the port number
+
+By default pureml host container on `0.0.0.0:8000`. If that port is already in use, the below command can be explicitly provided to change port to your custom port:
+
 ```python
 import pureml
 
-org_id = "<org id>"
-access_token = "<access_token>"
-
-pureml.docker.create(label='churn classifier:dev:v5',
-                     image_tag='churn_model_docker',
+pureml.docker.create('flavia_tabnet_classifier:dev_2:v1',
                      org_id=org_id,
-                     access_token=access_token,)
+                     access_token=access_token,
+                     port=<your port number>)
 ```
 
 ## Expected Output
@@ -35,14 +79,16 @@ pureml.docker.create(label='churn classifier:dev:v5',
 If executed successfully, PureML returns the following message along with the URL where the model is hosted.
 
 ```
-Taking the default predict.py file path:  <path to predict.py>
-Taking the requirements.txt file path:  <path to requirements.txt>
+
+Taking the default predict.py file path: <path to predict.py>
+Taking the requirements.txt file path: <path to requirements.txt>
 FastAPI server files are created
 Docker image is created
 <Image: '<model name>:<model version>'>
 Created Docker container
 <Container: <container id>>
 Prediction requests can be forwarded to 0.0.0.0:8000/predict
+
 ```
 
 The model is hosted at `0.0.0.0:8000/predict`. Users can get predictions by sending get requests to the API.
@@ -60,7 +106,8 @@ params = {'test_data': <test data>}
 headers = {'accept': 'application/json'}
 
 response = requests.get('http://0.0.0.0:8000/predict',
-                        params=params, headers=headers)
+                        params=params,
+                        headers=headers)
 
 predictions = response.json()
 ```
@@ -83,7 +130,7 @@ The JSON data received by the API endpoint will convert the data into the requir
 
 - [Numpy array](https://numpy.org/doc/stable/): 'numpy ndarray'
 - [Pandas dataframe](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html): 'pandas dataframe'
-- string: 'text
+- [string](): 'text
 - [Image](https://pillow.readthedocs.io/en/stable/reference/Image.html): 'image'
 
 ### Output datatypes
@@ -92,4 +139,4 @@ The model output will be converted into a JSON string and returned to the user u
 
 - [Numpy array](https://numpy.org/doc/stable/): 'numpy ndarray
 - [Pandas dataframe](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html): 'pandas dataframe
-- string: 'text
+- [string](): 'text

@@ -2,7 +2,9 @@
 title: Version Dataset
 ---
 
-### Register a Dataset version
+Created a dataset? No? [Create now](/core-concepts/dataset#creating-a-dataset). Yes? Here's what you should do next.
+
+## Register a Dataset version
 
 After the Dataset has been initialized, you can register it using `dataset` module.
 
@@ -32,7 +34,32 @@ def build_dataset():
 df = build_dataset()
 ```
 
-### Fetching a Dataset version
+## Register a validated Dataset
+
+Once the dataset is validated, here is how you can register the validated dataset.
+
+```python
+@dataset(<dataset_label>)
+def build_dataset
+    ...
+    x_test = #test features
+    y_test = #test labels
+    return {"x_test":x_test,  "y_test":y_test}
+```
+
+<Accordion title="`x_test` and `y_test` keys are mandatory. Any other key-value pair is allowed in registered dataset.">
+Ex. If you want to register dataset along with training features and labels, you can add an extra key-value pair as show below:
+
+```python
+return {"x_train":x_train,
+        "x_test":x_test,
+        "y_train":y_train,
+        "y_test":y_test}
+```
+
+</Accordion>
+
+## Fetching a Dataset version
 
 Once you register your dataset to PureML, you can load it using `dataset` module.
 
@@ -52,7 +79,7 @@ dataset = pureml.dataset.fetch('telecom churn:dev:v2')
 
 Here, we have fetched the version `v2` of the dataset `telecom churn`.
 
-### Submit, approve and reject dataset version in review
+## Submit, approve and reject dataset version in review
 
 By providing a comprehensive set of data lineage and visualizations, PureML makes it easy to identify and correct any issues with its review feature. Owner can approve or reject to add in production.
 

@@ -2,7 +2,9 @@
 title: Version Model
 ---
 
-### Register Models
+Created a model? No? [Create one now](/core-concepts/model#creating-models-and-branches). Yes? Here's what you should do next.
+
+## Register Models
 
 PureML assists you with creating, training, and tracking all of your machine learning project information, including ML models and datasets, using semantic versioning and full artifact logging.
 
@@ -23,7 +25,7 @@ import pureml
 from pureml.decorators.model import model
 ```
 
-### Train and Register your Model Version
+## Train and Register your Model Version
 
 We will train a `XGBClassifier` to predict the classes of samples from `Iris dataset` in this tutorial. This is a straightforward training function that returns the trained model and prints the `accuracy` of our model. We will utilize the `Iris` data from sklearn.
 
@@ -46,7 +48,7 @@ def train():
 xgb_model = train()
 ```
 
-### Now let's register our model to pureml
+## Now let's register our model to pureml
 
 To register the model, add the `@model` decorator to the training function. PureML will register the returned trained model to your PureML project.
 
@@ -69,7 +71,7 @@ def train():
 xgb_model = train()
 ```
 
-### Fetching a Model
+## Fetching a Model
 
 Once you register your model to PureML, you can load the model from PureML using `model` module.
 
@@ -95,7 +97,7 @@ Here, we have fetched the version `v3` of the model `iris_classifier`.
 print('Prediction: ', preds[0])
 ```
 
-### Submit, approve and reject model version in review
+## Submit, approve and reject model version in review
 
 By providing a comprehensive set of metrics and visualizations, PureML makes it easy to identify and correct any issues with its review feature and allows you to evaluate the quality of their data and the accuracy of their model. Owner can approve or reject to add in production.
 

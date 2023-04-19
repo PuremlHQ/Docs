@@ -15,7 +15,6 @@ pip3 install pureml
 
 </CodeGroup>
 
-
 If you`re a large company looking for a proof-of-concept, or an engineer looking to use the open-source version in a funky non-production way, then you're in the right place! Our Docker compose deployment let's you spin up a fresh Pureml instance in minutes.
 
 Want more reliability? The easiest way to get started with PureML is to use [PureML Cloud](https://pureml.com/).
@@ -34,7 +33,7 @@ Want more reliability? The easiest way to get started with PureML is to use [Pur
 1. In a new directory where you want to setup the containers, create a new file `docker-compose.yml`
 2. Add the following content from our [official docker-compose example file](https://raw.githubusercontent.com/PuremlHQ/PureML/main/packages/pureml_docker/docker-compose.yml)
 
-   ```yml
+   ```yml docker-compose.yml
    version: "3"
 
    services:
@@ -50,7 +49,7 @@ Want more reliability? The easiest way to get started with PureML is to use [Pur
      frontend:
        image: puremlhq/pureml_frontend:dev
        environment:
-         - NEXT_PUBLIC_BACKEND_URL=http://backend:8080/api/
+         - BACKEND_URL=http://backend:8080/api/
        ports:
          - 3000:3000
        links:
