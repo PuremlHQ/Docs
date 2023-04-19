@@ -2,8 +2,8 @@
   "$schema": "https://mintlify.com/schema.json",
   "name": "PureML Docs",
   "logo": {
-    "dark": "/logo/PureMLLogo_Light.png",
-    "light": "/logo/PureMLLogo_Dark.svg"
+    "dark": "/logo/PureMLLogoText_Light.svg",
+    "light": "/logo/PureMLLogoText_Dark.svg"
   },
   "favicon": "/favicon.png",
   "colors": {
@@ -12,12 +12,12 @@
     "dark": "#0E4DDD"
   },
   "metadata": {
-    "og:logo": "/logo/PureMLLogo_Dark.svg",
+    "og:logo": "/logo/PureMLLogoText_Dark.svg",
     "og:description": "The ultimate tool for managing your production machine learning workflow.",
-    "og:image": "https://github.com/PuremlHQ/PureML-docs/blob/main/images/PureMLDocsMetaImg.png?raw=true",
-    "twitter:logo": "/logo/PureMLLogo_Dark.svg",
+    "og:image": "https://github.com/PuremlHQ/PureML-docs/blob/main/images/PureMLDocsMetaTagImg.png?raw=true",
+    "twitter:logo": "/logo/PureMLLogoText_Dark.svg",
     "twitter:description": "The ultimate tool for managing your production machine learning workflow.",
-    "twitter:image": "https://github.com/PuremlHQ/PureML-docs/blob/main/images/PureMLDocsMetaImg.png?raw=true"
+    "twitter:image": "https://github.com/PuremlHQ/PureML-docs/blob/main/images/PureMLDocsMetaTagImg.png?raw=true"
   },
   "topbarLinks": [],
   "topbarCtaButton": {
