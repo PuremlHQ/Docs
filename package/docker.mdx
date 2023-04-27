@@ -8,19 +8,25 @@ PureML uses Docker-py to create containers for the models.
 
 Before you start creating the container for your model, install the following clients on your machine. If not explicitly specified, use the latest available version of the specified components.
 
-<Tabs>
-  <Tab title="CPU">
-    <Card title="Download docker" icon="link" href="https://docs.docker.com/engine/install/">
-       Docker Engine is an open source containerization technology for building and containerizing your applications.
-    </Card>
+<Card
+  title="Download docker"
+  icon="link"
+  href="https://docs.docker.com/engine/install/"
+>
+  Docker Engine is an open source containerization technology for building and
+  containerizing your applications.
+</Card>
 
-  </Tab>
-  <Tab title="GPU">
-  <Card title="Download container toolkit" icon="link" href="https://catalog.ngc.nvidia.com/orgs/nvidia/teams/k8s/containers/container-toolkit">
-      NVIDIA container toolkit is a wrapper around a docker container to provide access to system GPUs for the container.
-    </Card>
-  </Tab>
-</Tabs>
+To use GPU for the container, you need GPU to be installed in your system. Follow steps from below link and get ready for packaging:
+
+<Card
+  title="Download container toolkit"
+  icon="link"
+  href="https://docs.docker.com/config/containers/resource_constraints/#gpu"
+>
+  NVIDIA container toolkit is a wrapper around a docker container to provide
+  access to system GPUs for the container.
+</Card>
 
 ## Create your prediction function
 
@@ -47,11 +53,10 @@ Once the env file is correctly loaded, you can proceed to create docker using `p
     ```python
     import pureml
 
-    org_id = "<org id>"
-    access_token = "<access_token>"
+    env_path = "<env_path>"
 
     pureml.docker.create(label='churn classifier:dev:v5',
-                         org_id=org_id,
+                         env_path=env_path,
                          access_token=access_token,)
     ```
 
