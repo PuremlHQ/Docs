@@ -28,6 +28,20 @@ Refer to [Prediction Section](../prediction/versioning) on to how to create a pr
 
 ## Creating Docker Container
 
+Creating a docker container is way too easy to package your updated data than you think.
+
+Create a `.env` file
+
+<CodeGroup>
+```properties .env
+ORG_ID="<org_id>"
+API_ID="<api_id>"
+API_KEY="<api_key>"
+```
+</CodeGroup>
+
+Once the env file is correctly loaded, you can proceed to create docker using `pureml`.
+
 <Tabs>
   <Tab title="CPU">
     ```python
