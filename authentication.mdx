@@ -43,11 +43,11 @@ Once you're logged in, you'll be able to view your datasets, models, and other a
 
 Go to API Token section in user account settings page on PureML UI here (or using your self-hosted URL if any).
 
-<img src="images/Settings_APITokenList.png" alt="ListAPIToken" />
+<img src="images/Settings_APITokenList_Updated.png" alt="ListAPIToken" />
 
-Create a new API Token. Copy the API Id and API Secret and save them somewhere safe. The API secret will never be shown again.
+Create a new API Token. Copy the  API Secret and save them somewhere safe. The API secret will never be shown again.
 
-<img src="images/Settings_APITokenCreate.png" alt="CreateAPIToken" />
+<img src="images/Settings_APITokenCreate_Updated.png" alt="CreateAPIToken" />
 
 Go to your organization settings page to get your organization id. This will be useful in the next step.
 
@@ -58,7 +58,7 @@ Go to your organization settings page to get your organization id. This will be 
     ```python
     import pureml
 
-    pureml.login(org_id="ENTER_YOUR_ORG_ID", api_id="ENTER_API_ID", api_key="ENTER_API_KEY")
+    pureml.login(org_id="ENTER_YOUR_ORG_ID", api_key="ENTER_API_KEY")
     ```
 
   </Tab>
