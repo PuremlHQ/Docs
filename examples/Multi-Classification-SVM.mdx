@@ -15,7 +15,7 @@ pip install pureml
 You can use the following command to install the packages.
 
 ```bash
-pip install  scikit-learn 
+pip install  scikit-learn==1.2.2 
 ```
 
 OR
@@ -23,7 +23,7 @@ OR
 you can create a `requirements.txt` file with the following contents
 
 ```properties
-scikit-learn 
+scikit-learn==1.2.2
 ```
 
 and run the following command
@@ -68,7 +68,7 @@ def create_dataset():
 
 create_dataset()
 ```
-You can fetch the loaded dataset using pureml.dataset.fetch()
+You can fetch the loaded dataset using `pureml.dataset.fetch()`
 
 ```python
 import pureml
@@ -107,10 +107,15 @@ def create_model():
 
 create_model()
 ```
+To Fetch the Model we can use `pureml.model.fetch()`
+```python
+import pureml
+pureml.model.fetch(label='multiclassification:svm:v1')
+```
 
 Once ouur training is complete our model will be ready to rock and roll🎸✨. But that's too much of a hassle. So for now, let's just do some predictions
 
-## Let's Now create a predict.py file to store your prediction logic
+## Let's Now create a `predict.py` file to store  prediction logic
 
 ```python
 from pureml import BasePredictor, Input, Output
