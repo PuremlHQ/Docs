@@ -107,7 +107,7 @@ def create_dataset():
 create_dataset()
 ```
 
-You can fetch the model with pureml.dataset.fetch()
+To fetch the model with `pureml.dataset.fetch()`
 
 ```python
 import pureml
@@ -152,7 +152,7 @@ def create_model():
 create_model()
 
 ```
-You can fetch the model using pureml.model.fetch()
+You can fetch the model using `pureml.model.fetch()`
 
 ```python
 import pureml
@@ -161,7 +161,7 @@ pureml.model.fetch(label='Classification_model:development:v1')
 
 Once ouur training is complete our model will be ready to rock and roll🎸✨. But that's too much of a hassle. So for now, let's just do some predictions
 
-## Let's Now create a predict.py file to store your prediction logic
+## Let's Now create a `predict.py` file to store your prediction logic
 ```python
 from pureml import BasePredictor,Input,Output
 import pureml
