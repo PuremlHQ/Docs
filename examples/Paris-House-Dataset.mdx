@@ -15,7 +15,7 @@ pip install pureml
 You can use the following command to install the packages.
 
 ```bash
-pip install torch scikit-learn scikit-image numpy opencv-python  xgboost pandas pytorch_tabnet
+pip install torch scikit-learn==1.2.2 scikit-image numpy opencv-python  xgboost pandas pytorch_tabnet
 ```
 
 OR
@@ -25,7 +25,7 @@ you can create a `requirements.txt` file with the following contents
 ```properties
 pytorch_tabnet
 torch
-scikit-learn
+scikit-learn==1.2.2
 scikit-image
 numpy
 opencv-python
@@ -83,7 +83,7 @@ def create_data():
 create_data()
 
 ```
-<Note> {" "} You can fetch the dataset using pureml.dataset.fetch() {" "}</Note>
+To Fetch the dataset we can you `pureml.dataset.fetch()`
 ```python
 df = pureml.dataset.fetch('Regression:Example3:v1')
 x_test = df['x_test']
@@ -147,9 +147,18 @@ train_model()
 	model.{" "}
 </Note>
 
-Once ouur training is complete our model will be ready to rock and roll🎸✨. But that's too much of a hassle. So for now, let's just do some predictions
 
-## Let's Now create a predict.py file to store your prediction logic
+To fetch the model we can use `pureml.model.fetch()`
+
+```python
+import pureml
+pureml.model.fetch(label='Regression_example_1_model:development2:v1')
+```
+
+
+Once our training is complete our model will be ready to rock and roll🎸✨. But that's too much of a hassle. So for now, let's just do some predictions
+
+## Let's Now create a `predict.py` file to store your prediction logic
 ```python
 from pureml import BasePredictor,Input,Output
 import pureml
