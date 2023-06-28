@@ -13,11 +13,11 @@
   },
   "metadata": {
     "og:logo": "/logo/PureMLLogoText_Dark.svg",
-    "og:description": "The ultimate tool for managing your production machine learning workflow.",
-    "og:image": "https://github.com/PuremlHQ/PureML-docs/blob/main/images/PureMLDocsMetaTagImg.png?raw=true",
+    "og:description": "The ultimate AI-powered tool for managing and governing your production machine learning workflow to manage risks while ensuring compliance with emerging regulations and standards.",
+    "og:image": "https://github.com/PuremlHQ/PureML-docs/blob/main/images/PureMLDocsGRCImg.png?raw=true",
     "twitter:logo": "/logo/PureMLLogoText_Dark.svg",
-    "twitter:description": "The ultimate tool for managing your production machine learning workflow.",
-    "twitter:image": "https://github.com/PuremlHQ/PureML-docs/blob/main/images/PureMLDocsMetaTagImg.png?raw=true"
+    "twitter:description": "The ultimate AI-powered tool for managing and governing your production machine learning workflow to manage risks while ensuring compliance with emerging regulations and standards.",
+    "twitter:image": "https://github.com/PuremlHQ/PureML-docs/blob/main/images/PureMLDocsGRCImg.png?raw=true"
   },
   "topbarLinks": [],
   "topbarCtaButton": {
