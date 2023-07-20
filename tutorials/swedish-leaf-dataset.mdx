@@ -211,10 +211,10 @@ def split_data(df):
 ```
 
 <Note>
-	{" "}
-	A transformer can have multiple parents. In this case, the transformer will be
-	executed after all the parents have been executed. The output of the parents will
-	be passed as input to the transformer.{" "}
+  {" "}
+  A transformer can have multiple parents. In this case, the transformer will be
+  executed after all the parents have been executed. The output of the parents will
+  be passed as input to the transformer.{" "}
 </Note>
 
 ## Creating a dataset
@@ -328,9 +328,9 @@ tabnet = train_model()
 ```
 
 <Note>
-	{" "}
-	The `pureml.log` function is used here to log the metrics and parameters of the
-	model.{" "}
+  {" "}
+  The `pureml.log` function is used here to log the metrics and parameters of the
+  model.{" "}
 </Note>
 
 Once ouur training is complete our model will be ready to rock and roll🎸✨. But that's too much of a hassle. So for now, let's just do some predictions
@@ -347,8 +347,8 @@ PureML predict module has a method add. Here we are using the following argument
 Our predict.py file has the script to load the model and make predictions. The requirements.txt file has the dependencies required to run the predict.py file.
 
 <Note>
-	{" "}
-	You can know more about the prediction process [here](../prediction/versioning){" "}
+  {" "}
+  You can know more about the prediction process [here](../prediction/versioning){" "}
 </Note>
 
 <a href="./predict.py">Click Here to see predict.py file</a>
@@ -393,9 +393,9 @@ ORG_ID=your_org_id
 ```
 
 <Note>
-	{" "}
-	You can get your API token and org id from the [settings](https://app.pureml.io/settings)
-	page. If you do not remember/have any API token then you can generate one
+  {" "}
+  You can get your API token and org id from the [settings](https://app.pureml.io/settings)
+  page. If you do not remember/have any API token then you can generate one
 </Note>
 
 You can then create a docker image using the `pureml.docker.create` method.

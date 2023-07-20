@@ -47,24 +47,11 @@
       "pages": ["welcome", "installation", "authentication"]
     },
     {
-      "group": "Self Hosting",
-      "pages": ["self-hosting/overview", "self-hosting/configuration"]
-    },
-    {
       "group": "Core Concepts",
       "pages": [
         "core-concepts/model",
         "core-concepts/dataset",
-        {
-          "group": "Log",
-          "pages": [
-            "core-concepts/log/log",
-            "core-concepts/log/metric",
-            "core-concepts/log/figure"
-          ]
-        },
-        "core-concepts/lineage",
-        "core-concepts/branch"
+        "core-concepts/lineage"
       ]
     },
     {
@@ -89,8 +76,12 @@
       "pages": ["package/docker", "package/fastapi", "package/streamlit"]
     },
     {
-      "group": "Examples",
-      "pages": ["examples/swedish-leaf-dataset"]
+      "group": "Risks",
+      "pages": ["risk/generate", "risk/reference"]
+    },
+    {
+      "group": "Tutorials",
+      "pages": ["tutorials/swedish-leaf-dataset"]
     },
     {
       "group": "Artifacts",
