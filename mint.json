@@ -43,7 +43,7 @@
     {
       "name": "Book a Demo",
       "icon": "calendar-days",
-      "url": "https://discord.gg/xNUHt9yguJ"
+      "url": "https://calendly.com/pureml-inc/pureml"
     }
   ],
   "navigation": [
@@ -53,44 +53,30 @@
     },
     {
       "group": "Core Concepts",
-      "pages": ["core-concepts/model", "core-concepts/dataset"]
-    },
-    {
-      "group": "Version",
-      "pages": [
-        "version/version-model",
-        "version/version-dataset",
-        "version/example"
-      ]
+      "pages": ["core-concepts/create-dataset", "core-concepts/register-model"]
     },
     {
       "group": "Prediction",
       "pages": ["prediction/versioning", "prediction/input-output-types"]
     },
     {
-      "group": "Evaluate",
-      "pages": [
-        "evaluate/create-your-first-evaluation",
-        "evaluate/generate-risk",
-        "evaluate/reference",
-        "evaluate/example"
-      ]
-    },
-    {
       "group": "Policies",
-      "pages": [
-        "policy/implement-policy",
-        "policy/generate-report",
-        "policy/supported-policies"
-      ]
+      "pages": ["policy/generate-risk", "policy/generate-report"]
     },
     {
-      "group": "Package",
-      "pages": ["package/docker", "package/fastapi", "package/streamlit"]
+      "group": "Resources",
+      "pages": [
+        "policy/supported-policies",
+        "policy/risk-reference",
+        {
+          "group": "Packages",
+          "pages": ["package/docker", "package/fastapi", "package/streamlit"]
+        }
+      ]
     },
     {
       "group": "Examples",
-      "pages": ["tutorials/swedish-leaf-dataset"]
+      "pages": ["tutorials/swedish-leaf-dataset", "tutorials/pet-data"]
     },
     {
       "group": "Artifacts",

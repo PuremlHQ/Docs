@@ -1,0 +1,130 @@
+---
+description: Add your first dataset.
+---
+
+PureML Datasets are a crucial component for organizing user datasets. A Dataset serves as an empty container for storing the elements of the datasets and contains lineage, dataset-related graphs, and dataset files.
+
+There are two types of datasets in PureML: Private Datasets, which only the user can access and view the content, and Public Datasets, which are accessible to all PureML users.
+
+To register dataset files and add their relevant content to the Dataset, the user needs to initialize an empty Dataset, which can be done via the PureML Python package.
+
+### Creating a Dataset
+
+With the PureML dataset module, you can perform a variety of actions related to creating and managing datasets. Here's an overview of the available methods:
+
+Creating a Dataset To create a new model, import the pureml module and use the `dataset.init` method:
+
+```python
+import pureml
+
+pureml.dataset.init(label='FirstDataset', readme='ReadME.md')
+```
+
+The name of the dataset to be created are required parameters. You can also provide an optional readme file path.
+
+<Info>
+**label** parameter consists dataset name in the following format:
+
+`_\<name>:\<name>:\<version>_`
+
+For initializing a dataset, _version_ is not required. So, we use _\<name>_ as the label.
+
+</Info>
+
+<Warning>
+  **label** should not contain any spaces. Special characters other than "**-**"
+  and "**\_**" are not allowed
+</Warning>
+
+<Note>
+  Created a dataset? No? [Create
+  now](/core-concepts/dataset#creating-a-dataset). Yes? Here's what you should
+  do next.
+</Note>
+
+## Register a Dataset version
+
+After the Dataset has been initialized, you can register it using `dataset` module.
+
+```python
+import pureml
+
+data = ###
+lineage = ##@
+
+dataset = pureml.dataset.register(data, 'telecom churn', lineage)
+```
+
+`lineage` is required to register a dataset. Yours can utilize `@dataset` decorator to auto-generate data lineage.
+
+```python
+from sklearn.preprocessing import OrdinalEncoder
+import pandas as pd
+from pureml.decorators import dataset, transformer, load_data
+
+@dataset('telecom_churn')
+def build_dataset():
+    df = load_churn_data()
+    df = encode_ordinal(df)
+    df = encode_binary(df)
+    return df
+
+df = build_dataset()
+```
+
+## Register a validated Dataset
+
+Once the dataset is validated, here is how you can register the validated dataset.
+
+```python
+@dataset(<dataset_label>)
+def build_dataset
+    ...
+    x_test = #test features
+    y_test = #test labels
+    return {"x_test":x_test,  "y_test":y_test}
+```
+
+<Accordion title="`x_test` and `y_test` keys are mandatory. Any other key-value pair is allowed in registered dataset.">
+Ex. If you want to register dataset along with training features and labels, you can add an extra key-value pair as show below:
+
+```python
+return {"x_train":x_train,
+        "x_test":x_test,
+        "y_train":y_train,
+        "y_test":y_test}
+```
+
+</Accordion>
+
+## Fetching a Dataset version
+
+Once you register your dataset to PureML, you can load it using `dataset` module.
+
+Let's look at how to load the dataset:
+
+```python
+import pureml
+
+dataset = pureml.dataset.fetch('telecom churn')
+```
+
+By default, `fetch` fetches `latest` version of the dataset. A particular version of a dataset can be fetched by providing `version` parameter as the following.
+
+```python
+dataset = pureml.dataset.fetch('telecom churn:v2')
+```
+
+Here, we have fetched the version `v2` of the dataset `telecom churn`.
+
+## Listing Datasets
+
+To list all available datasets, use the `dataset.list` method:
+
+```python
+import pureml
+
+pureml.dataset.list()
+```
+
+These methods make it easy to create and manage the models in PureML. By using them, you can streamline your model management workflows and improve collaboration among team members.
