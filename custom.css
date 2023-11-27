@@ -1,0 +1,9 @@
+/* Prevent layout shift from scrollbar appearing */
+html {
+  overflow-y: scroll;
+}
+
+/* Hide sidebar scrollbar */
+#sidebar::-webkit-scrollbar {
+  display: none;
+}

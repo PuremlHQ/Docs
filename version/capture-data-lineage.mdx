@@ -42,7 +42,7 @@ def encode_binary(df):
 
     return df
 
-@dataset('telecom churn:dev', parent=['encode ordinal', 'encode binary'])
+@dataset('telecom churn', parent=['encode ordinal', 'encode binary'])
 def build_dataset():
     '''
     None

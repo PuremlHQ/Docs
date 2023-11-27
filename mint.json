@@ -19,25 +19,30 @@
     "twitter:description": "The ultimate AI-powered tool for managing and governing your production machine learning workflow to manage risks while ensuring compliance with emerging regulations and standards.",
     "twitter:image": "https://github.com/PuremlHQ/PureML-docs/blob/main/images/PureMLDocsGRCImg.png?raw=true"
   },
-  "topbarLinks": [],
   "topbarCtaButton": {
-    "type": "github",
-    "url": "https://github.com/puremlHQ/pureml"
+    "name": "Sign in",
+    "url": "https://app.pureml.com/"
   },
-  "anchors": [
+  "topbarLinks": [],
+  "tabs": [
     {
-      "name": "SDK",
-      "icon": "code",
+      "name": "SDK Reference",
       "url": "sdk"
     },
+    {
+      "name": "Tutorials",
+      "url": "tutorials"
+    }
+  ],
+  "anchors": [
     {
       "name": "Changelog",
       "icon": "list",
       "url": "https://changelog.pureml.com"
     },
     {
-      "name": "Community",
-      "icon": "discord",
+      "name": "Book a Demo",
+      "icon": "calendar-days",
       "url": "https://discord.gg/xNUHt9yguJ"
     }
   ],
@@ -48,18 +53,13 @@
     },
     {
       "group": "Core Concepts",
-      "pages": [
-        "core-concepts/model",
-        "core-concepts/dataset",
-        "core-concepts/lineage"
-      ]
+      "pages": ["core-concepts/model", "core-concepts/dataset"]
     },
     {
       "group": "Version",
       "pages": [
         "version/version-model",
         "version/version-dataset",
-        "version/capture-data-lineage",
         "version/example"
       ]
     },
@@ -69,18 +69,27 @@
     },
     {
       "group": "Evaluate",
-      "pages": ["evaluate/create-your-first-evaluation", "evaluate/example"]
+      "pages": [
+        "evaluate/create-your-first-evaluation",
+        "evaluate/generate-risk",
+        "evaluate/reference",
+        "evaluate/example"
+      ]
+    },
+    {
+      "group": "Policies",
+      "pages": [
+        "policy/implement-policy",
+        "policy/generate-report",
+        "policy/supported-policies"
+      ]
     },
     {
       "group": "Package",
       "pages": ["package/docker", "package/fastapi", "package/streamlit"]
     },
     {
-      "group": "Risks",
-      "pages": ["risk/generate", "risk/reference"]
-    },
-    {
-      "group": "Tutorials",
+      "group": "Examples",
       "pages": ["tutorials/swedish-leaf-dataset"]
     },
     {
@@ -127,7 +136,6 @@
   ],
   "footerSocials": {
     "twitter": "https://twitter.com/puremlHQ",
-    "github": "https://github.com/puremlhq",
     "linkedin": "https://www.linkedin.com/company/pureml-inc"
   }
 }

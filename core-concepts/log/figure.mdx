@@ -14,7 +14,7 @@ Using log method, matplotlib figures are added to a model version:
 from pureml.decorators import model
 import pureml
 
-@model('sales forecast:dev')
+@model('sales forecast')
 def train_model():
     #model = model training code
     ....
@@ -34,12 +34,12 @@ Logging can be done outside the model decorator in the following ways:
 
 ```python
 pureml.log(figure={'cnf_matrix':fig},
-           label='sales forecast:dev')
+           label='sales forecast')
 ```
 
 By default, log method adds the figure to the latest version of the model. It can be added to a particular version of a model by providing version parameter as the following:
 
 ```python
 pureml.log(figure={'cnf_matrix':fig},
-           label='sales forecast:dev:v3')
+           label='sales forecast:v3')
 ```

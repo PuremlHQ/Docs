@@ -12,7 +12,7 @@ Using `log` method, metrics and parameters can be added to a model version.
 from pureml.decorators import model
 import pureml
 
-@model('sales forecast:dev')
+@model('sales forecast')
 def train_model():
     #model = model training code
     ....
@@ -32,7 +32,7 @@ Logging can be done outside the model decorator in the following ways:
 ```python
 pureml.log(metrics={'accuracy': 0.9, 'f1': 0.8},
            params={'random_state': 42, 'channels': 3},
-           label='sales forecast:dev')
+           label='sales forecast')
 ```
 
 By default, log method adds the metadata to the latest version of the model. Metadata can be added to a particular version of a model by providing version parameter as the following:
@@ -40,7 +40,7 @@ By default, log method adds the metadata to the latest version of the model. Met
 ```python
 pureml.log(metrics={'accuracy': 0.9, 'f1': 0.8},
            params={'random_state': 42, 'channels': 3},
-           label='sales forecast:dev:v3')
+           label='sales forecast:v3')
 ```
 
 ## Expected Output

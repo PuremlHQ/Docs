@@ -15,7 +15,7 @@ from tensorflow.keras.layers import Dense,
 GlobalAveragePooling2D, Input
 from pureml.decorators import model
 
-@dataset("petdata:dev")
+@dataset("petdata")
 def load_data(img_folder = "PetImages"):
   image_size = (180, 180)
   batch_size = 16
@@ -40,7 +40,7 @@ def load_data(img_folder = "PetImages"):
   val_ds = val_ds.prefetch(tf.data.AUTOTUNE)
   return train_ds, val_ds
 
-@model("pet_classifier:dev")
+@model("pet_classifier")
 def train_model(train_ds, val_ds):
   input_tensor = Input(shape=(180, 180, 3))
   base_model = InceptionV3(

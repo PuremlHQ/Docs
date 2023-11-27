@@ -226,7 +226,7 @@ We can now create a dataset from the pipeline. The dataset will be created by ex
 - `upload`: If `True`, the dataset will be uploaded to the cloud. If `False`, the dataset will be saved locally.
 
 ```python
-@dataset(label='flavia_handcrafted_features:dev_2',parent='split_data', upload=True)
+@dataset(label='flavia_handcrafted_features',parent='split_data', upload=True)
 def create_dataset():
     columns_all = ['filepath','image', 'label', 'mask', 'gray', 'contours', 'color', 'shape', 'texture', 'feature']
     columns_needed = ['feature','label']
@@ -262,7 +262,7 @@ y_train, y_test = data["y_train"], data["y_test"]
 
 ## Creating a model to classify the dataset
 
-With the PureML model module, you can perform a variety of actions related to creating and managing models and branches.
+With the PureML model module, you can perform a variety of actions related to creating and managing models.
 PureML assists you with training and tracking all of your machine learning project information, including ML models and datasets, using semantic versioning and full artifact logging.
 
 We can make a separate python file for the model. The model file will contain the model definition and the training code.
@@ -275,10 +275,10 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 import pureml
 ```
 
-The model training function can be created by using the `@model` decorator. The decorator takes the model name and branch as the argument in the format `model_name:branch_name`.
+The model training function can be created by using the `@model` decorator. The decorator takes the model name as the argument in the format `model_name`.
 
 ```python
-@model('flavia_tabnet_classifier:dev_2')
+@model('flavia_tabnet_classifier')
 def train_model():
 
     tabnet_params = dict(
@@ -341,7 +341,7 @@ For registered models, prediction function along with its requirements and resou
 
 PureML predict module has a method add. Here we are using the following arguments:
 
-- `label`: The name of the model (model_name:branch_name:version)
+- `label`: The name of the model (model_name:version)
 - `paths`: The path to the predict.py file and requirements.txt file.
 
 Our predict.py file has the script to load the model and make predictions. The requirements.txt file has the dependencies required to run the predict.py file.
@@ -356,7 +356,7 @@ Our predict.py file has the script to load the model and make predictions. The r
 ```python
 import pureml
 
-pureml.predict.add(label="flavia_tabnet_classifier:dev_2:v1",
+pureml.predict.add(label="flavia_tabnet_classifier:v1",
                    paths={"predict": "./predict.py", "requirements":"./requirements.txt"})
 ```
 
@@ -367,8 +367,8 @@ PureML has an eval method that runs a _task_type_ on a _label_model_ using a _la
 ```python
 import pureml
 pureml.eval(task_type='classification',
-            label_model='flavia_tabnet_classifier:dev_2:v1',
-            label_dataset='flavia_handcrafted_features:dev_2:v1')
+            label_model='flavia_tabnet_classifier:v1',
+            label_dataset='flavia_handcrafted_features:v1')
 ```
 
 ## Deploy with FastAPI
@@ -378,7 +378,7 @@ You evaluated model can now be deployed using FastAPI simply by using the `purem
 ```python
 import pureml
 
-pureml.fastapi.run('flavia_tabnet_classifier:dev_2:v1')
+pureml.fastapi.run('flavia_tabnet_classifier:v1')
 ```
 
 ## Deploy using Docker

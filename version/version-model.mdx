@@ -2,7 +2,7 @@
 title: Version Model
 ---
 
-Created a model? No? [Create one now](/core-concepts/model#creating-models-and-branches). Yes? Here's what you should do next.
+Created a model? No? [Create one now](/core-concepts/model#creating-models). Yes? Here's what you should do next.
 
 ## Register Models
 
@@ -55,7 +55,7 @@ To register the model, add the `@model` decorator to the training function. Pure
 Let's also replace `print()` with `pureml.log()` to register obtained model metrics to the project.
 
 ```python
-@model('iris_classifier:dev')
+@model('iris_classifier')
 def train():
     xgb_model = xgb.XGBClassifier()
     xgb_model.fit(X_train, y_train)
@@ -80,7 +80,7 @@ Let's look at how to load and generate predictions with your model:
 ```python
 import pureml
 
-model = pureml.model.fetch('iris_clasifier:dev')
+model = pureml.model.fetch('iris_clasifier')
 X, y = load_iris(return_X_y=True)
 preds = model.predict(X)
 ```
@@ -88,7 +88,7 @@ preds = model.predict(X)
 By default, `fetch` method fetches `latest` version of the model. A particular `version` of a model can be fetched by providing version parameter as the following.
 
 ```python
-model = pureml.model.fetch('iris_classifier:dev:v3')
+model = pureml.model.fetch('iris_classifier:v3')
 ```
 
 Here, we have fetched the version `v3` of the model `iris_classifier`.
