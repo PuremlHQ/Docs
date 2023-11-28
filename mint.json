@@ -7,9 +7,9 @@
   },
   "favicon": "/favicon.png",
   "colors": {
-    "primary": "#0E4DDD",
+    "primary": "#5046E5",
     "light": "#2196f3",
-    "dark": "#0E4DDD"
+    "dark": "#5046E5"
   },
   "metadata": {
     "og:logo": "/logo/PureMLLogoText_Dark.svg",
