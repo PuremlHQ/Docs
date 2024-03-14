@@ -1,0 +1,54 @@
+### Create prediction function
+
+### Create validation dataset
+
+PureML expects the dataset version to be used for validation in a specific manner.
+
+### Run your first evaluation
+
+```python
+from pureml.decorators import dataset
+
+@dataset("<dataset_name>")
+def create_validation_dataset():
+    x_test = #Data for testing
+    y_test = #Labels for testing
+
+    return {"x_test":x_test, "y_test":y_test}
+```
+
+<Info>
+  Any dataset that is intended to be used in model validation should be
+  registered in a dictionary format with mandatory keys; "x_test" for testing
+  data, and "y_test" for dataset labels.
+</Info>
+
+
+### Requirements
+You need to install pureml-policy to apply policies.
+
+<CodeGroup>
+
+```bash >_ Terminal
+pip3 install pureml-policy
+```
+
+</CodeGroup>
+
+
+### Running Policy
+
+```python
+from pureml_policy import policy_eval
+results = policy_eval.eval(framework_name  = "EU AI Act for High Risk",
+            label_model='Credit Underwriting:v1',
+            label_dataset='Credit Loan Dataset:v1')
+
+```
+
+<Info>
+  PureML supports two task types for evaluation, "classification", and
+  "regression".
+</Info>
+
+<img src="images/modelRisk.png" alt="ModelRisk" />
