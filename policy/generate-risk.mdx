@@ -15,8 +15,9 @@ from pureml.decorators import dataset
 def create_validation_dataset():
     x_test = #Data for testing
     y_test = #Labels for testing
+    A_test = #Sensitive features (optional)
 
-    return {"x_test":x_test, "y_test":y_test}
+    return {"x_test":x_test, "y_test":y_test, sensitive_features: "A_test"}
 ```
 
 <Info>
@@ -27,12 +28,12 @@ def create_validation_dataset():
 
 ### Running Evaluator
 
-```python
-import pureml
 
-pureml.eval(task_type='classification',
-            label_dataset='<dataset_name:dataset_version>',
-            label_model='<model_name:model_version>')
+```python
+from pureml_evaluate.policy import policy_eval
+results = policy_eval.eval(label_model='Credit Underwriting:v1',
+            label_dataset='Credit Loan Dataset:v1')
+
 ```
 
 <Info>
@@ -40,4 +41,4 @@ pureml.eval(task_type='classification',
   "regression".
 </Info>
 
-<img src="images/modelRisk.png" alt="ModelRisk" />
+After running the evaluator, the computed results were sent to the PureML Backend. This will allow to apply any policy from the Dashboard itself.

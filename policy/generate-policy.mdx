@@ -25,12 +25,12 @@ def create_validation_dataset():
 
 
 ### Requirements
-You need to install pureml-policy to apply policies.
+You need to install pureml-evaluate to apply policies.
 
 <CodeGroup>
 
 ```bash >_ Terminal
-pip3 install pureml-policy
+pip3 install pureml-evaluate
 ```
 
 </CodeGroup>
@@ -39,9 +39,8 @@ pip3 install pureml-policy
 ### Running Policy
 
 ```python
-from pureml_policy import policy_eval
-results = policy_eval.eval(framework_name  = "EU AI Act for High Risk",
-            label_model='Credit Underwriting:v1',
+from pureml_evaluate.policy import policy_eval
+results = policy_eval.eval(label_model='Credit Underwriting:v1',
             label_dataset='Credit Loan Dataset:v1')
 
 ```
@@ -50,5 +49,3 @@ results = policy_eval.eval(framework_name  = "EU AI Act for High Risk",
   PureML supports two task types for evaluation, "classification", and
   "regression".
 </Info>
-
-<img src="images/modelRisk.png" alt="ModelRisk" />
