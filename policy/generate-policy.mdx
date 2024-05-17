@@ -1,7 +1,5 @@
 ### Create prediction function
 
-Refer to [Prediction Section](../prediction/versioning) on to how to create a prediction function and add it to a version of a model.
-
 ### Create validation dataset
 
 PureML expects the dataset version to be used for validation in a specific manner.
@@ -15,9 +13,8 @@ from pureml.decorators import dataset
 def create_validation_dataset():
     x_test = #Data for testing
     y_test = #Labels for testing
-    A_test = #Sensitive features (optional)
 
-    return {"x_test":x_test, "y_test":y_test, sensitive_features: "A_test"}
+    return {"x_test":x_test, "y_test":y_test}
 ```
 
 <Info>
@@ -26,8 +23,20 @@ def create_validation_dataset():
   data, and "y_test" for dataset labels.
 </Info>
 
-### Running Evaluator
 
+### Requirements
+You need to install pureml-evaluate to apply policies.
+
+<CodeGroup>
+
+```bash >_ Terminal
+pip3 install pureml-evaluate
+```
+
+</CodeGroup>
+
+
+### Running Policy
 
 ```python
 from pureml_evaluate.policy import policy_eval
@@ -40,5 +49,3 @@ results = policy_eval.eval(label_model='Credit Underwriting:v1',
   PureML supports two task types for evaluation, "classification", and
   "regression".
 </Info>
-
-After running the evaluator, the computed results were sent to the PureML Backend. This will allow to apply any policy from the Dashboard itself.

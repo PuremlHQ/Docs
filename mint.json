@@ -61,13 +61,16 @@
     },
     {
       "group": "Policies",
-      "pages": ["policy/generate-risk", "policy/generate-report"]
+      "pages": [ "policy/generate-risk", "policy/apply-policy", "policy/documents","policy/questionaire","policy/forms","policy/generate-report"]
+    },
+    {
+      "group": "Gen AI",
+      "pages": [ "Gen-AI/dataset-register","Gen-AI/model-register","Gen-AI/generate-risk"]
     },
     {
       "group": "Resources",
       "pages": [
         "policy/supported-policies",
-        "policy/risk-reference",
         {
           "group": "Packages",
           "pages": ["package/docker", "package/fastapi", "package/streamlit"]
@@ -76,7 +79,7 @@
     },
     {
       "group": "Examples",
-      "pages": ["tutorials/swedish-leaf-dataset", "tutorials/pet-data"]
+      "pages": ["tutorials/credit_underwiring"]
     },
     {
       "group": "Artifacts",

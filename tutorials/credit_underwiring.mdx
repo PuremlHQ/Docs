@@ -1,0 +1,281 @@
+---
+title: Getting started with Credit Underwiring
+---
+
+## Installation
+
+Pureml SDK & CLI can be directly installed using pip.
+
+```bash
+pip install pureml pureml_evaluate
+```
+
+## For additional project requirements we will need to install the following packages
+
+You can use the following command to install the packages.
+
+```bash
+pip install pandas lightgbm xlrd
+```
+
+OR
+
+you can create a `requirements.txt` file with the following contents
+
+```properties
+pandas
+lightgbm
+xlrd
+```
+
+and run the following command
+
+```bash
+pip install -r requirements.txt
+```
+
+## Download and load your dataset
+
+Download your dataset from [here](https://archive.ics.uci.edu/dataset/350/default+of+credit+card+clients).
+
+Start by creating a function to load the dataset into a DataFrame. We will use the @load_data() decorator from PureML SDK.
+
+```python
+import pureml
+from pureml.decorators import load_data,transformer,dataset,model
+import numpy as np
+import pandas as pd
+import lightgbm as lgb
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+import warnings
+import random
+
+warnings.simplefilter("ignore")
+rand_seed = 1234
+np.random.seed(rand_seed)
+
+@load_data()
+def load_dataset():
+    df = pd.read_csv('default of credit card clients.csv', header=1)
+
+    return df
+```
+
+## Preprocess the data
+
+We can add a few more functions to preprocess the data. We will use the @transformer() decorator from PureML SDK.
+
+
+with transformer functions. We specify the parent of the functions using the parent argument. This will ensure that the functions are executed in the order specified.
+
+```python
+@transformer()
+def remove_columns(df):
+    return df.drop(['ID'],axis =1)
+
+@transformer()
+def rename_columns(df):
+    return df.rename(columns={"PAY_0": "PAY_1","default payment next month":"default", "SEX":"sex"})    
+
+@transformer()
+def dataset_imbalances(df):
+    categorical_features = ["sex", "EDUCATION", "MARRIAGE"]
+
+    for col_name in categorical_features:
+        df[col_name] = df[col_name].astype("category")
+
+    Y, A = df.loc[:, "default"], df.loc[:, "sex"]
+    X = pd.get_dummies(df.drop(columns=["default", "sex"]))
+
+
+    A_str = A.map({1: "male", 2: "female"})
+
+    A_str.value_counts(normalize=True)
+    Y.value_counts(normalize=True)
+    
+    # Generate "Interest" column as a DataFrame
+    interest_values = np.random.normal(loc=2 * Y, scale=A)
+    interest_column = pd.DataFrame(interest_values, columns=["Interest"])
+
+    # Concatenate "Interest" column with X DataFrame
+    X = pd.concat([X, interest_column], axis=1)
+
+    return {'X':X,'Y':Y,'A_str':A_str}
+
+@transformer()
+def resample_training_data(X_train, Y_train, A_train):
+   
+    negative_ids = Y_train[Y_train == 0].index
+    positive_ids = Y_train[Y_train == 1].index
+    balanced_ids = positive_ids.union(
+        np.random.choice(a=negative_ids, size=len(positive_ids)))
+
+    X_train = X_train.loc[balanced_ids, :]
+    Y_train = Y_train.loc[balanced_ids]
+    A_train = A_train.loc[balanced_ids]
+    return  {"X_train": X_train, "Y_train":Y_train, "A_train": A_train}
+
+
+
+@transformer()
+def add_new_column(sensitive_features):
+    values = ['Indian', 'African', 'American']
+
+    list_length = sensitive_features.shape[0]
+    full_list = values * (list_length // len(values))
+    full_list += values[:list_length % len(values)]
+    random.shuffle(full_list)
+
+    full_list = np.array(full_list)
+
+    s_feat = pd.concat([sensitive_features.reset_index(drop=True), pd.DataFrame(full_list, columns=['race'])], axis=1)
+
+    return s_feat
+
+```
+
+<Note>
+  {" "}
+  A transformer can have multiple parents. In this case, the transformer will be
+  executed after all the parents have been executed. The output of the parents will
+  be passed as input to the transformer.{" "}
+</Note>
+
+## Creating a dataset
+
+We can now create a dataset from the pipeline. The dataset will be created by executing the pipeline and saving the output of the last transformer in the pipeline. The dataset can be created by using the `@dataset` decorator. The decorator takes the following arguments:
+
+- `label`: The name of the dataset
+- `parent`: The name of the transformer whose output will be saved as the dataset
+- `upload`: If `True`, the dataset will be uploaded to the cloud. If `False`, the dataset will be saved locally.
+
+```python
+@dataset(label='Credit Loan Dataset4',upload=True)
+def create_dataset():
+    df = load_dataset()
+    df = remove_columns(df)
+    df = rename_columns(df)
+    data  = dataset_imbalances(df)
+    X,Y,A_str = data['X'],data['Y'],data['A_str']
+    X_train, X_test, y_train, y_test, A_train, A_test = train_test_split(X, Y, A_str, test_size=0.35, stratify=Y)
+    data = resample_training_data(X_train, y_train, A_train)
+    X_train, y_train, A_train = data['X_train'],data['Y_train'],data['A_train']
+
+    A_test = add_new_column(sensitive_features=A_test)
+
+    return {"x_train":X_train,"y_train":y_train.to_numpy(),"x_test":X_test,"y_test":y_test.to_numpy(),"sensitive_features" : A_test}
+
+
+create_dataset()
+```
+
+## Creating a model to classify the dataset
+
+With the PureML model module, you can perform a variety of actions related to creating and managing models.
+PureML assists you with training and tracking all of your machine learning project information, including ML models and datasets, using semantic versioning and full artifact logging.
+
+We can make a separate python file for the model. The model file will contain the model definition and the training code.
+
+The model training function can be created by using the `@model` decorator. The decorator takes the model name as the argument in the format `model_name`.
+
+```python
+from pureml.decorators import model
+@model(label='Credit Model Underwriting')
+def create_model():
+    data = pureml.dataset.fetch('Credit Loan Dataset4:v1')
+    x_train = data['x_train']
+    y_train = data['y_train']
+    lgb_params = {
+    "objective": "binary",
+    "metric": "auc",
+    "learning_rate": 0.412,
+    "num_leaves": 10,
+    "max_depth": 3,
+    "random_state": rand_seed,
+    "n_jobs": 1,}
+
+    pureml.log(params=lgb_params)
+    estimator = Pipeline(
+        steps=[
+            ("preprocessing", StandardScaler()),
+            ("classifier", lgb.LGBMClassifier(**lgb_params)),
+        ]
+    )
+
+    estimator.fit(x_train, y_train)
+    return estimator
+
+model_lgb = create_model()
+```
+
+Once our training is complete our model will be ready to rock and roll🎸✨. But that's too much of a hassle. So for now, let's just do some predictions
+
+## Add prediction to your model
+
+For registered models, prediction function along with its requirements and resources can be logged to be used for further processes like evaluating and packaging.
+
+PureML predict module has a method add. Here we are using the following arguments:
+
+- `label`: The name of the model (model_name:version)
+- `paths`: The path to the predict.py file and requirements.txt file.
+
+Our predict.py file has the script to load the model and make predictions. The requirements.txt file has the dependencies required to run the predict.py file.
+
+<Note>
+  {" "}
+  You can know more about the prediction process [here](../prediction/versioning){" "}
+</Note>
+
+```python
+from pureml import BasePredictor, Input, Output
+import pureml
+from typing import Any
+
+
+class Predictor(BasePredictor):
+    label:Any = "Credit Model Underwriting:v1"
+    input:Any = Input(type="numpy ndarray")
+    output:Any = Output(type="numpy ndarray")
+
+    def load_models(self):
+        self.model = pureml.model.fetch(self.label)
+
+    def predict(self, data):
+        predictions = self.model.predict(data)
+
+        return predictions
+```
+<Note> store the above python code as predict.py. The predict file is specific for this example </Note>
+
+```python
+import pureml
+
+pureml.predict.add(label="flavia_tabnet_classifier:v1",
+                   paths={"predict": "./predict.py", "requirements":"./requirements.txt"})
+```
+
+## Create your first Evaluation 
+
+
+```python
+from pureml_policy import policy_eval
+results = policy_eval.eval(
+            label_model='Credit Model Underwriting:v1',
+            label_dataset='Credit Loan Dataset4:v1')
+
+```
+
+
+<Info>Congrats! You have successfully created your first evaluation. You can now apply polices in Dashboard.</Info>
+
+To know more about applying policies, you can refer to the documentation [here](../policy/apply-policy)
+
+To know more about the Documents upload, you can refer to the documentation [here](../policy/documents)
+
+To know more about the Questionaire, you can refer to the documentation [here](../policy/questionaire)
+
+To know more about the Forms, you can refer to the documentation [here](../policy/forms)
+
+To know more about Report Generation, you can refer to the documentation [here](../policy/generate-report)
