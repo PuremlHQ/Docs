@@ -2,7 +2,7 @@
 title: Docker
 ---
 
-PureML uses Docker-py to create containers for the models.
+SuperAlign uses Docker-py to create containers for the models.
 
 ## Installing Prerequisites
 
@@ -73,7 +73,7 @@ Once the env file is correctly loaded, you can proceed to create docker using `p
                          runtime="nvidia",
                          gpu_ids=[0])
     ```
-    <Info> PureML utilises NVIDIA container toolkit to provide access to system [GPUs in the container](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/k8s/containers/container-toolkit).</Info>
+    <Info> SuperAlign utilises NVIDIA container toolkit to provide access to system [GPUs in the container](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/k8s/containers/container-toolkit).</Info>
 
     > In above code, only GPU with id 0 is used, if you want to use multiple GPUs available in your system then you should specify it with a separate id `gpu_ids=[0,1,2,..]`.
 
@@ -95,7 +95,7 @@ pureml.docker.create('flavia_tabnet_classifier:dev_2:v1',
 
 ## Expected Output
 
-If executed successfully, PureML returns the following message along with the URL where the model is hosted.
+If executed successfully, SuperAlign returns the following message along with the URL where the model is hosted.
 
 ```
 
@@ -116,7 +116,7 @@ The model is hosted at `0.0.0.0:8000/predict`. Users can get predictions by send
 
 ### Using Requests
 
-The API call expects a parameter named `test_data` that contains data to be tested. This `data` will be passed on to the data parameter set in the `model_predict` function. PureML obtains the model specified in the `pureml.docker.create` command and sends it to themodel parameter of the `model_predict` function.
+The API call expects a parameter named `test_data` that contains data to be tested. This `data` will be passed on to the data parameter set in the `model_predict` function. SuperAlign obtains the model specified in the `pureml.docker.create` command and sends it to themodel parameter of the `model_predict` function.
 
 ```python
 import requests

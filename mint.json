@@ -1,9 +1,9 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "PureML Docs",
+  "name": "SuperAlign Docs",
   "logo": {
-    "dark": "/logo/PureMLLogoText_Light.svg",
-    "light": "/logo/PureMLLogoText_Dark.svg"
+    "light": "/logo/SuperAlignLogoText.svg",
+    "dark": "/logo/SuperAlignLogoText-Dark.svg"
   },
   "favicon": "/favicon.png",
   "colors": {
@@ -12,16 +12,16 @@
     "dark": "#5046E5"
   },
   "metadata": {
-    "og:logo": "/logo/PureMLLogoText_Dark.svg",
+    "og:logo": "/logo/SuperAlignLogoText-Dark.svg",
     "og:description": "The ultimate AI-powered tool for managing and governing your production machine learning workflow to manage risks while ensuring compliance with emerging regulations and standards.",
     "og:image": "https://github.com/PuremlHQ/PureML-docs/blob/main/images/PureMLDocsGRCImg.png?raw=true",
-    "twitter:logo": "/logo/PureMLLogoText_Dark.svg",
+    "twitter:logo": "/logo/SuperAlignLogoText-Dark.svg",
     "twitter:description": "The ultimate AI-powered tool for managing and governing your production machine learning workflow to manage risks while ensuring compliance with emerging regulations and standards.",
     "twitter:image": "https://github.com/PuremlHQ/PureML-docs/blob/main/images/PureMLDocsGRCImg.png?raw=true"
   },
   "topbarCtaButton": {
     "name": "Sign in",
-    "url": "https://app.pureml.com/"
+    "url": "https://app.superalign.ai/"
   },
   "topbarLinks": [],
   "tabs": [
@@ -36,6 +36,11 @@
   ],
   "anchors": [
     {
+      "name": "API Reference",
+      "icon": "code",
+      "url": "https://api.superalign.ai/docs"
+    },
+    {
       "name": "Changelog",
       "icon": "list",
       "url": "https://changelog.pureml.com"
@@ -43,29 +48,50 @@
     {
       "name": "Book a Demo",
       "icon": "calendar-days",
-      "url": "https://calendly.com/pureml-inc/pureml"
+      "url": "https://cal.com/appidi/30min"
     }
   ],
   "navigation": [
     {
       "group": "Getting Started",
-      "pages": ["welcome", "installation", "authentication"]
+      "pages": [
+        "welcome",
+        "installation",
+        "authentication"
+      ]
     },
     {
       "group": "Core Concepts",
-      "pages": ["core-concepts/create-dataset", "core-concepts/register-model"]
+      "pages": [
+        "core-concepts/create-dataset",
+        "core-concepts/register-model"
+      ]
     },
     {
       "group": "Prediction",
-      "pages": ["prediction/versioning", "prediction/input-output-types"]
+      "pages": [
+        "prediction/versioning",
+        "prediction/input-output-types"
+      ]
     },
     {
       "group": "Policies",
-      "pages": [ "policy/generate-risk", "policy/apply-policy", "policy/documents","policy/questionaire","policy/forms","policy/generate-report"]
+      "pages": [
+        "policy/generate-risk",
+        "policy/apply-policy",
+        "policy/documents",
+        "policy/questionaire",
+        "policy/forms",
+        "policy/generate-report"
+      ]
     },
     {
       "group": "Gen AI",
-      "pages": [ "Gen-AI/dataset-register","Gen-AI/model-register","Gen-AI/generate-risk"]
+      "pages": [
+        "Gen-AI/dataset-register",
+        "Gen-AI/model-register",
+        "Gen-AI/generate-risk"
+      ]
     },
     {
       "group": "Resources",
@@ -73,13 +99,19 @@
         "policy/supported-policies",
         {
           "group": "Packages",
-          "pages": ["package/docker", "package/fastapi", "package/streamlit"]
+          "pages": [
+            "package/docker",
+            "package/fastapi",
+            "package/streamlit"
+          ]
         }
       ]
     },
     {
       "group": "Examples",
-      "pages": ["tutorials/credit_underwiring"]
+      "pages": [
+        "tutorials/credit_underwiring"
+      ]
     },
     {
       "group": "Artifacts",
@@ -102,11 +134,17 @@
     },
     {
       "group": "Log",
-      "pages": ["sdk/log/log"]
+      "pages": [
+        "sdk/log/log"
+      ]
     },
     {
       "group": "Metrics",
-      "pages": ["sdk/metrics/add", "sdk/metrics/fetch", "sdk/metrics/delete"]
+      "pages": [
+        "sdk/metrics/add",
+        "sdk/metrics/fetch",
+        "sdk/metrics/delete"
+      ]
     },
     {
       "group": "Model",
@@ -120,7 +158,11 @@
     },
     {
       "group": "Params",
-      "pages": ["sdk/params/add", "sdk/params/fetch", "sdk/params/delete"]
+      "pages": [
+        "sdk/params/add",
+        "sdk/params/fetch",
+        "sdk/params/delete"
+      ]
     }
   ],
   "footerSocials": {

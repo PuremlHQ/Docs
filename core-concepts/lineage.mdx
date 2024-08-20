@@ -3,11 +3,11 @@ title: Lineage
 description: Data lineage for quick analysis.
 ---
 
-Lineage is a crucial element of any data pipeline that enables the tracking of the data flow from its origin to the end goal, which includes all the intermediate processes and transformations. In the context of PureML, lineage involves capturing the provenance of data and transformations applied to produce a final dataset.
+Lineage is a crucial element of any data pipeline that enables the tracking of the data flow from its origin to the end goal, which includes all the intermediate processes and transformations. In the context of SuperAlign, lineage involves capturing the provenance of data and transformations applied to produce a final dataset.
 
 ### Basic Pipeline
 
-A standard data pipeline contains loading data and applying transformations to convert it into a dataset. PureML provides the following decorators to register these components of the pipeline
+A standard data pipeline contains loading data and applying transformations to convert it into a dataset. SuperAlign provides the following decorators to register these components of the pipeline
 
 **@load_data** is used to decorate a function that is used to load data into the code. It should return the loaded dataframe.
 
@@ -15,7 +15,7 @@ A standard data pipeline contains loading data and applying transformations to c
 
 **@dataset** is used to decorate the function that amalgamates all the steps in the data pipeline to generate the dataset. It should return the loaded dataframe.
 
-The following example demonstrates how to create a data pipeline using PureML decorators that capture the lineage of the data transformations
+The following example demonstrates how to create a data pipeline using SuperAlign decorators that capture the lineage of the data transformations
 
 ### Example
 

@@ -2,19 +2,19 @@
 description: Start creating your model.
 ---
 
-The PureML model registry provides a centralized location for users to store their models and manage their lifecycle collaboratively. This makes it easier for stakeholders to manage models and promotes transparency in accessing models for tests, deployment, audit, and other purposes.
+The SuperAlign model registry provides a centralized location for users to store their models and manage their lifecycle collaboratively. This makes it easier for stakeholders to manage models and promotes transparency in accessing models for tests, deployment, audit, and other purposes.
 
-With PureML, you can manage your models in the following ways:
+With SuperAlign, you can manage your models in the following ways:
 
 - Create models to track and assess their relevance using generic model data.
-- Automatically version models to efficiently organize model runs. PureML logs model parameters, metrics, and other metadata that changes for each registered model.
+- Automatically version models to efficiently organize model runs. SuperAlign logs model parameters, metrics, and other metadata that changes for each registered model.
 - Fetch stored models and their metadata through our API.
 
-By using the PureML model registry, you can streamline your model management processes and facilitate collaboration among your team members. This allows for greater efficiency, transparency, and accuracy in managing your models.
+By using the SuperAlign model registry, you can streamline your model management processes and facilitate collaboration among your team members. This allows for greater efficiency, transparency, and accuracy in managing your models.
 
 ### Creating Models
 
-With the PureML model module, you can perform a variety of actions related to creating and managing models. Here's an overview of the available methods:
+With the SuperAlign model module, you can perform a variety of actions related to creating and managing models. Here's an overview of the available methods:
 
 Creating a Model To create a new model, import the pureml module and use the `model.init` method:
 
@@ -48,9 +48,9 @@ For initializing a model, _version_ is not required. So, we use _\<name>:_ as th
 
 ## Register Models
 
-PureML assists you with creating, training, and tracking all of your machine learning project information, including ML models and datasets, using semantic versioning and full artifact logging.
+SuperAlign assists you with creating, training, and tracking all of your machine learning project information, including ML models and datasets, using semantic versioning and full artifact logging.
 
-This short tutorial will show you how to register and track machine learning models using PureML.
+This short tutorial will show you how to register and track machine learning models using SuperAlign.
 
 ```bash
 pip install pureml
@@ -92,7 +92,7 @@ xgb_model = train()
 
 ## Now let's register our model to pureml
 
-To register the model, add the `@model` decorator to the training function. PureML will register the returned trained model to your PureML project.
+To register the model, add the `@model` decorator to the training function. SuperAlign will register the returned trained model to your SuperAlign project.
 
 Let's also replace `print()` with `pureml.log()` to register obtained model metrics to the project.
 
@@ -115,7 +115,7 @@ xgb_model = train()
 
 ## Fetching a Model
 
-Once you register your model to PureML, you can load the model from PureML using `model` module.
+Once you register your model to SuperAlign, you can load the model from SuperAlign using `model` module.
 
 Let's look at how to load and generate predictions with your model:
 
@@ -149,4 +149,4 @@ import pureml
 pureml.model.list()
 ```
 
-These methods make it easy to create and manage the models in PureML. By using them, you can streamline your model management workflows and improve collaboration among team members.
+These methods make it easy to create and manage the models in SuperAlign. By using them, you can streamline your model management workflows and improve collaboration among team members.

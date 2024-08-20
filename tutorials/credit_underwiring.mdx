@@ -38,7 +38,7 @@ pip install -r requirements.txt
 
 Download your dataset from [here](https://archive.ics.uci.edu/dataset/350/default+of+credit+card+clients).
 
-Start by creating a function to load the dataset into a DataFrame. We will use the @load_data() decorator from PureML SDK.
+Start by creating a function to load the dataset into a DataFrame. We will use the @load_data() decorator from SuperAlign SDK.
 
 ```python
 import pureml
@@ -65,7 +65,7 @@ def load_dataset():
 
 ## Preprocess the data
 
-We can add a few more functions to preprocess the data. We will use the @transformer() decorator from PureML SDK.
+We can add a few more functions to preprocess the data. We will use the @transformer() decorator from SuperAlign SDK.
 
 
 with transformer functions. We specify the parent of the functions using the parent argument. This will ensure that the functions are executed in the order specified.
@@ -173,8 +173,8 @@ create_dataset()
 
 ## Creating a model to classify the dataset
 
-With the PureML model module, you can perform a variety of actions related to creating and managing models.
-PureML assists you with training and tracking all of your machine learning project information, including ML models and datasets, using semantic versioning and full artifact logging.
+With the SuperAlign model module, you can perform a variety of actions related to creating and managing models.
+SuperAlign assists you with training and tracking all of your machine learning project information, including ML models and datasets, using semantic versioning and full artifact logging.
 
 We can make a separate python file for the model. The model file will contain the model definition and the training code.
 
@@ -216,7 +216,7 @@ Once our training is complete our model will be ready to rock and roll🎸✨. B
 
 For registered models, prediction function along with its requirements and resources can be logged to be used for further processes like evaluating and packaging.
 
-PureML predict module has a method add. Here we are using the following arguments:
+SuperAlign predict module has a method add. Here we are using the following arguments:
 
 - `label`: The name of the model (model_name:version)
 - `paths`: The path to the predict.py file and requirements.txt file.

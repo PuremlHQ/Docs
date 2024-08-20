@@ -39,7 +39,7 @@ pip install -r requirements.txt
 
 Download your dataset from [here](https://www.cvl.isy.liu.se/en/research/datasets/swedish-leaf/).
 
-Start by creating a function to load the dataset into a DataFrame. We will use the @load_data() decorator from PureML SDK.
+Start by creating a function to load the dataset into a DataFrame. We will use the @load_data() decorator from SuperAlign SDK.
 
 ```python
 import cv2
@@ -68,7 +68,7 @@ def load_images(df):
 
 ## Preprocess the data
 
-We can add a few more functions to preprocess the data. We will use the @transformer() decorator from PureML SDK.
+We can add a few more functions to preprocess the data. We will use the @transformer() decorator from SuperAlign SDK.
 
 Add the following additional imports to the top of your file.
 
@@ -262,8 +262,8 @@ y_train, y_test = data["y_train"], data["y_test"]
 
 ## Creating a model to classify the dataset
 
-With the PureML model module, you can perform a variety of actions related to creating and managing models.
-PureML assists you with training and tracking all of your machine learning project information, including ML models and datasets, using semantic versioning and full artifact logging.
+With the SuperAlign model module, you can perform a variety of actions related to creating and managing models.
+SuperAlign assists you with training and tracking all of your machine learning project information, including ML models and datasets, using semantic versioning and full artifact logging.
 
 We can make a separate python file for the model. The model file will contain the model definition and the training code.
 Let's start by adding the required imports.
@@ -339,7 +339,7 @@ Once ouur training is complete our model will be ready to rock and roll🎸✨. 
 
 For registered models, prediction function along with its requirements and resources can be logged to be used for further processes like evaluating and packaging.
 
-PureML predict module has a method add. Here we are using the following arguments:
+SuperAlign predict module has a method add. Here we are using the following arguments:
 
 - `label`: The name of the model (model_name:version)
 - `paths`: The path to the predict.py file and requirements.txt file.
@@ -362,7 +362,7 @@ pureml.predict.add(label="flavia_tabnet_classifier:v1",
 
 ## Create your first Evaluation
 
-PureML has an eval method that runs a _task_type_ on a _label_model_ using a _label_dataset_.
+SuperAlign has an eval method that runs a _task_type_ on a _label_model_ using a _label_dataset_.
 
 ```python
 import pureml
@@ -394,7 +394,7 @@ ORG_ID=your_org_id
 
 <Note>
   {" "}
-  You can get your API token and org id from the [settings](https://app.pureml.io/settings)
+  You can get your API token and org id from the [settings](https://app.superalign.ai/settings)
   page. If you do not remember/have any API token then you can generate one
 </Note>
 
