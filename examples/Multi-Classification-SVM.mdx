@@ -1,0 +1,167 @@
+---
+title: Multi Classification Using SVM
+---
+
+## Installation
+
+Pureml SDK & CLI can be directly installed using pip.
+
+```bash
+pip install pureml
+```
+
+## For additional project requirements we will need to install the following packages
+
+You can use the following command to install the packages.
+
+```bash
+pip install  scikit-learn==1.2.2 
+```
+
+OR
+
+you can create a `requirements.txt` file with the following contents
+
+```properties
+scikit-learn==1.2.2
+```
+
+and run the following command
+
+```bash
+pip install -r requirements.txt
+```
+
+## Load your dataset
+
+Start by creating a function to load the dataset into a DataFrame. We will use the @load_data() decorator from PureML SDK.
+
+```python
+import pureml
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import load_wine
+from pureml.decorators import load_data,dataset,model
+
+@load_data()
+def load_dataset():
+    wine_data = load_wine()
+    return wine_data
+
+load_dataset()
+```
+
+## Creating a dataset
+
+We can now create a dataset from the pipeline. The dataset will be created by executing the pipeline and saving the output of the last transformer in the pipeline. The dataset can be created by using the `@dataset` decorator. The decorator takes the following arguments:
+
+- `label`: The name of the dataset
+- `upload`: If `True`, the dataset will be uploaded to the cloud. If `False`, the dataset will be saved locally.
+
+```python
+@dataset(label='multiclass_data:development',upload=True)
+def create_dataset():
+    wine_data = load_data()
+    x = wine_data.data
+    y = wine_data.target
+    x_train,x_test,y_train,y_test = train_test_split(x,y,random_state=42)
+    return {'x_train':x_train,'x_test':x_test,'y_train':y_train,'y_test':y_test}
+
+create_dataset()
+```
+You can fetch the loaded dataset using `pureml.dataset.fetch()`
+
+```python
+import pureml
+df = pureml.dataset.fetch('multiclass_data:development:v1')
+x_train = df['x_train']
+x_test = df['x_test']
+y_train = df['y_train']
+y_test = df['y_test']
+```
+
+## Creating a model to classify the dataset
+
+With the PureML model module, you can perform a variety of actions related to creating and managing models and branches.
+PureML assists you with training and tracking all of your machine learning project information, including ML models and datasets, using semantic versioning and full artifact logging.
+
+We can make a separate python file for the model. The model file will contain the model definition and the training code.
+Let's start by adding the required imports.
+
+```python
+from sklearn.svm import SVC
+```
+
+The model training function can be created by using the `@model` decorator. The decorator takes the model name and branch as the argument in the format `model_name:branch_name`.
+
+
+```python
+@model(label='multiclassification:svm')
+def create_model():
+    clf = SVC(kernel='linear',C=1.0,random_state=42)
+    clf.fit(x_train,y_train)
+    y_pred = clf.predict(x_test)
+    accuracy = clf.score(x_test,y_test)
+    print(f"Accuracy : {accuracy}")
+    pureml.log(metrics={'accuracy': accuracy},params= {'kernel':'linear'})
+    return clf
+
+create_model()
+```
+To Fetch the Model we can use `pureml.model.fetch()`
+```python
+import pureml
+pureml.model.fetch(label='multiclassification:svm:v1')
+```
+
+Once ouur training is complete our model will be ready to rock and roll🎸✨. But that's too much of a hassle. So for now, let's just do some predictions
+
+## Let's Now create a `predict.py` file to store  prediction logic
+
+```python
+from pureml import BasePredictor, Input, Output
+import pureml
+
+class Predictor(BasePredictor):
+    label = 'multiclassification:svm:v1'
+    input = Input(type='numpy ndarray')
+    output = Output(type='numpy ndarray')
+
+    def load_models(self):
+        self.model = pureml.model.fetch(self.label)
+
+    def predict(self, data):
+        predictions = self.model.predict(data)
+        return predictions
+```
+
+## Add prediction to your model
+
+For registered models, prediction function along with its requirements and resources can be logged to be used for further processes like evaluating and packaging.
+
+PureML predict module has a method add. Here we are using the following arguments:
+
+- `label`: The name of the model (model_name:branch_name:version)
+- `paths`: The path to the predict.py file and requirements.txt file.
+
+Our predict.py file has the script to load the model and make predictions. The requirements.txt file has the dependencies required to run the predict.py file.
+
+<Note>
+	{" "}
+	You can know more about the prediction process [here](../prediction/versioning){" "}
+</Note>
+
+```python
+import pureml
+pureml.predict.add(label='multiclassification:svm:v1',paths= {'predict':'predict.py'})
+```
+
+## Create your first Evaluation
+
+PureML has an eval method that runs a _task_type_ on a _label_model_ using a _label_dataset_.
+
+```python
+import pureml
+pureml.eval(task_type='classification',
+            label_model='multiclassification:svm:v1',
+            label_dataset='multiclass_data:development:v1')
+```

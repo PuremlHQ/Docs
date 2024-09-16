@@ -1,0 +1,378 @@
+---
+title: Getting Started with Twitter Sentiment Analysis Using LSTM
+---
+
+## Installation
+
+Pureml SDK & CLI can be directly installed using pip.
+
+```bash
+pip install pureml
+```
+
+## For additional project requirements we will need to install the following packages
+
+You can use the following command to install the packages.
+
+```bash
+pip install numpy==1.23.5 pandas==1.5.3 nltk==3.8.1 keras==2.12.0 tensorflow==2.12.0
+```
+
+OR
+
+you can create a `requirements.txt` file with the following contents
+
+```properties
+pureml==0.3.8
+numpy==1.23.5
+pandas==1.5.3
+nltk==3.8.1
+tensorflow==2.12.0
+keras==2.12.0
+```
+
+and run the following command
+
+```bash
+pip install -r requirements.txt
+```
+
+## Download and load your dataset
+
+Download your dataset from [here](https://www.kaggle.com/code/josephassaker/intro-to-deep-learning-sentiment-classification/input).
+
+Start by creating a function to load the dataset into a DataFrame. We will use the @load_data() decorator from PureML SDK.
+
+```python
+import pureml
+from pureml.decorators import dataset,load_data,transformer,model
+from sklearn.model_selection import train_test_split
+import pandas as pd
+import numpy as np
+import pureml
+from nltk import WordNetLemmatizer, pos_tag
+import re, string
+from nltk.tokenize import TweetTokenizer
+
+@load_data()
+def load_dataset():
+    df_raw = pd.read_csv('data.csv', encoding="ISO-8859-1", header=None)  # Define the path the csv file.
+    df_raw.columns = ["label", "time", "date", "query", "username", "text"]
+    df = df_raw[['label', 'text']]
+    df_pos = df[df['label'] == 4]
+    df_neg = df[df['label'] == 0]
+    df_pos = df_pos.iloc[:int(len(df_pos) / 2048)]        # Retain the data as per your computation
+    df_neg = df_neg.iloc[:int(len(df_neg) / 2048)]
+    df = pd.concat([df_pos, df_neg])
+    return df
+
+```
+
+## Preprocess the data
+
+Run the following to download GLoVe Word Embedding
+```bash
+!wget http://nlp.stanford.edu/data/glove.6B.zip
+!unzip glove.6B.zip
+```
+We can add a few more functions to preprocess the data. We will use the @transformer() decorator from PureML SDK.
+
+
+```python
+@transformer()
+def read_data(df):
+    tk = TweetTokenizer(reduce_len=True)
+    data = []
+    X = df['text'].tolist()
+    Y = df['label'].tolist()
+    for x, y in zip(X, Y):
+        if y == 4:
+            data.append((tk.tokenize(x), 1))
+        else:
+            data.append((tk.tokenize(x), 0))
+    return data
+    
+@transformer()
+def cleaned(token):
+    if token == 'u':
+        return 'you'
+    if token == 'r':
+        return 'are'
+    if token == 'some1':
+        return 'someone'
+    if token == 'yrs':
+        return 'years'
+    if token == 'hrs':
+        return 'hours'
+    if token == 'mins':
+        return 'minutes'
+    if token == 'secs':
+        return 'seconds'
+    if token == 'pls' or token == 'plz':
+        return 'please'
+    if token == '2morow':
+        return 'tomorrow'
+    if token == '2day':
+        return 'today'
+    if token == '4got' or token == '4gotten':
+        return 'forget'
+    if token == 'amp' or token == 'quot' or token == 'lt' or token == 'gt' or token == '½25':
+        return ''
+    return token
+    
+ @transformer()
+ def list_to_dict(cleaned_tokens):
+    return dict([token, True] for token in cleaned_tokens)
+ 
+ @transformer()
+def remove_noise(tweet_tokens):
+    cleaned_tokens = []
+    for token, tag in pos_tag(tweet_tokens):
+        token = re.sub('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+#]|[!*\(\),]|'\
+                       '(?:%[0-9a-fA-F][0-9a-fA-F]))+','', token)
+        token = re.sub("(@[A-Za-z0-9_]+)","", token)
+        if tag.startswith("NN"):
+            pos = 'n'
+        elif tag.startswith('VB'):
+            pos = 'v'
+        else:
+            pos = 'a'
+        lemmatizer = WordNetLemmatizer()
+        token = lemmatizer.lemmatize(token, pos)
+        cleaned_token = cleaned(token.lower())
+        if cleaned_token not in string.punctuation and len(cleaned_token) > 2 and cleaned_token not in STOP_WORDS:
+            cleaned_tokens.append(cleaned_token)
+    return cleaned_tokens
+    
+@transformer()
+def cleaned_token_list(data):
+    final_data = []
+    for tokens, label in data:
+        final_data.append((list_to_dict(tokens), label))
+    print("Final Data created")
+    cleaned_tokens_list = []
+    for tokens, label in final_data:
+        cleaned_tokens_list.append((remove_noise(tokens), label))
+    return cleaned_tokens_list
+    
+@transformer()
+def read_glove_vecs(glove_file):
+    with open(glove_file, 'r', encoding="utf8") as f:
+        words = set()
+        word_to_vec_map = {}
+        for line in f:
+            line = line.strip().split()
+            curr_word = line[0]
+            words.add(curr_word)
+            word_to_vec_map[curr_word] = np.array(line[1:], dtype=np.float64)
+
+        i = 1
+        words_to_index = {}
+        index_to_words = {}
+        for w in sorted(words):
+            words_to_index[w] = i
+            index_to_words[i] = w
+            i = i + 1
+    return words_to_index, index_to_words, word_to_vec_map
+    
+@transformer()
+def cleared(word):
+    res = ""
+    prev = None
+    for char in word:
+        if char == prev: continue
+        prev = char
+        res += char
+    return res
+    
+@transformer()
+def sentence_to_indices(sentence_words, word_to_index, max_len, i,X):
+    unks = []
+    UNKS = []
+    sentence_indices = []
+    for j, w in enumerate(sentence_words):
+        try:
+            index = word_to_index[w]
+        except:
+            UNKS.append(w)
+            w = cleared(w)
+            try:
+                index = word_to_index[w]
+            except:
+                index = word_to_index['unk']
+                unks.append(w)
+        X[i, j] = index
+```
+
+## Creating a dataset
+
+We can now create a dataset from the pipeline. The dataset will be created by executing the pipeline and saving the output of the last transformer in the pipeline. The dataset can be created by using the `@dataset` decorator. The decorator takes the following arguments:
+
+- `label`: The name of the dataset
+- `upload`: If `True`, the dataset will be uploaded to the cloud. If `False`, the dataset will be saved locally.
+
+```python
+@dataset(label='nlpexample_docs:development',upload=True)
+def create_dataset():
+    df = load_dataset()
+    print(f"DF Created. {len(df)}")
+    data = read_data(df)
+    print(f"Data Created: {len(data)}")
+    cleaned_tokens_list = cleaned_token_list(data)
+    print(f"Cleaned_token_list Created. {len(cleaned_tokens_list)}")
+    word_to_index, index_to_word, word_to_vec_map = read_glove_vecs('glove.6B.50d.txt') # Define path to the GLoVe Word Embedding file
+    print(f"Read Gloves Created. {word_to_index['hello']}")
+    list_len = [len(i) for i, j in cleaned_tokens_list]
+    max_len = max(list_len)
+    print(f"max_len. {max_len}")
+    X = np.zeros((len(cleaned_tokens_list), max_len))
+    Y = np.zeros((len(cleaned_tokens_list), ))
+    print(f"X & Y Created. {len(X)} & {len(Y)}")
+    for i, tk_lb in enumerate(cleaned_tokens_list):
+        tokens, label = tk_lb
+        sentence_to_indices(tokens, word_to_index, max_len, i,X)
+        Y[i] = label
+    print(f"{len(X)} & {len(Y)}")
+    x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state=0, stratify=Y)
+    print(f"{len(x_train)} & {len(x_test)} & {len(y_train)} & {len(y_test)}")
+    return {"x_train":x_train,"x_test":x_test,"y_train":y_train,"y_test":y_test,"max_len":max_len,"word_to_index":word_to_index," index_to_word": index_to_word,"word_to_vec_map": word_to_vec_map}
+
+create_dataset()
+df = pureml.dataset.fetch(label='nlpexample_docs:development:v1')
+x_test = df['x_test']
+y_test = df['y_test']
+x_train = df['x_train']
+y_train = df['y_train']
+```
+
+To Fetch the dataset we can use `pureml.dataset.fetch()`
+
+```python
+import pureml
+pureml.dataset.fetch(label='nlpexample_docs:development:v1')
+```
+
+## Creating a model to classify the dataset
+
+With the PureML model module, you can perform a variety of actions related to creating and managing models and branches.
+PureML assists you with training and tracking all of your machine learning project information, including ML models and datasets, using semantic versioning and full artifact logging.
+
+We can make a separate python file for the model. The model file will contain the model definition and the training code.
+Let's start by adding the required imports.
+
+```python
+import keras
+from keras import Sequential
+from keras.models import Model
+from keras.layers import Dense, Dropout, LSTM, Bidirectional
+from tensorflow.keras.layers import Embedding
+from tensorflow.keras.layers import Embedding
+```
+```python
+# Function that will initialize and populate our embedding layer
+
+def pretrained_embedding_layer(word_to_vec_map, word_to_index, max_len):
+    vocab_len = len(word_to_index) + 1
+    emb_dim = word_to_vec_map["unk"].shape[0] #50
+
+    emb_matrix = np.zeros((vocab_len, emb_dim))
+
+    for word, idx in word_to_index.items():
+        emb_matrix[idx, :] = word_to_vec_map[word]
+
+    embedding_layer = Embedding(vocab_len, emb_dim, trainable=False, input_shape=(max_len,))
+    embedding_layer.build((None,))
+    embedding_layer.set_weights([emb_matrix])
+
+    return embedding_layer
+```
+
+The model training function can be created by using the `@model` decorator. The decorator takes the model name and branch as the argument in the format `model_name:branch_name`.
+
+
+```python
+df = pureml.dataset.fetch(label='nlpexample_docs:development:v1') # Fetching the Dataset using pureml.dataset.fetch()
+x_train = df['x_train']
+x_test = df['x_test']
+y_train = df['y_train']
+y_test = df['y_test']
+max_len  = df['max_len']
+max_len = df['max_len']
+
+@model(label='nlpexample_docs:model')
+def create_model():
+
+    model = Sequential()
+    word_to_index, index_to_word, word_to_vec_map = read_glove_vecs('glove.6B.50d.txt')
+    model.add(pretrained_embedding_layer(word_to_vec_map, word_to_index, df['max_len']))
+    model.add(Bidirectional(LSTM(units=128, return_sequences=True)))
+    model.add(Bidirectional(LSTM(units=128, return_sequences=False)))
+    model.add(Dense(units=1, activation='sigmoid'))
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+    model.fit(df['x_train'], df['y_train'], validation_data=(df['x_test'], df['y_test']), epochs = 1, batch_size = 64, shuffle=True)
+    return model
+
+create_model()
+```
+To Fetch the model we can use `pureml.model.fetch()`
+```python
+import pureml
+pureml.model.fetch(label = 'nlpexample_docs:model:v1')
+```
+
+Once our training is complete our model will be ready to rock and roll🎸✨. But that's too much of a hassle. So for now, let's just do some predictions
+
+## Let's Now create a `predict.py` file to store prediction logic
+```python
+from pureml import BasePredictor,Input,Output
+import pureml
+
+class Predictor(BasePredictor):
+    label = 'nlpexample_docs:model:v1'
+    input = Input(type = 'numpy ndarray')
+    output = Output(type = 'numpy ndarray')
+
+    def load_models(self):
+        self.model = pureml.model.fetch(self.label)
+
+    def predict(self, data):
+        prediction = self.model.predict(data)
+        threshold = 0.4                   
+        prediction = np.where(prediction > threshold,1,0)
+        prediction = np.squeeze(prediction)
+        return prediction
+```
+
+## Add prediction to your model
+
+For registered models, prediction function along with its requirements and resources can be logged to be used for further processes like evaluating and packaging.
+
+PureML predict module has a method add. Here we are using the following arguments:
+
+- `label`: The name of the model (model_name:branch_name:version)
+- `paths`: The path to the predict.py file and requirements.txt file.
+
+Our predict.py file has the script to load the model and make predictions. The requirements.txt file has the dependencies required to run the predict.py file.
+
+<Note>
+	{" "}
+	You can know more about the prediction process [here](../prediction/versioning){" "}
+</Note>
+
+```python
+import pureml
+
+pureml.predict.add(label='nlpexample_docs:model:v1',paths={'predict':'predict.py'})
+```
+
+## Create your first Evaluation
+
+PureML has an eval method that runs a _task_type_ on a _label_model_ using a _label_dataset_.
+
+```python
+import pureml
+pureml.eval(task_type='classification',
+            label_dataset='nlpexample_docs:development:v1',
+            label_model='nlpexample_docs:model:v1')
+```
+

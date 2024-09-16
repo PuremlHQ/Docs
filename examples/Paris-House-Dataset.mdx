@@ -1,0 +1,211 @@
+---
+title: Regression on Paris Housing Price Dataset
+---
+
+## Installation
+
+Pureml SDK & CLI can be directly installed using pip.
+
+```bash
+pip install pureml
+```
+
+## For additional project requirements we will need to install the following packages
+
+You can use the following command to install the packages.
+
+```bash
+pip install torch scikit-learn==1.2.2 scikit-image numpy opencv-python  xgboost pandas pytorch_tabnet
+```
+
+OR
+
+you can create a `requirements.txt` file with the following contents
+
+```properties
+pytorch_tabnet
+torch
+scikit-learn==1.2.2
+scikit-image
+numpy
+opencv-python
+xgboost
+pandas
+```
+
+and run the following command
+
+```bash
+pip install -r requirements.txt
+```
+
+## Download and load your dataset
+
+Download your dataset from [here](https://www.kaggle.com/competitions/playground-series-s3e6/data).
+
+Start by creating a function to load the dataset into a DataFrame. We will use the @load_data() decorator from PureML SDK.
+
+```python
+import pureml
+import pandas as pd
+from pureml.decorators import load_data,dataset
+from sklearn.model_selection import train_test_split
+
+
+@load_data()
+def load_data():
+    df = pd.read_csv('data/train.csv') # change the path to your data location
+    return df
+data = load_data()
+
+```
+<Note>
+	{" "}If you need functions to pre-process the data then we can use prueml.decorators.transformer() function{" "}
+</Note> 
+
+## Creating a dataset
+
+We can now create a dataset from the pipeline. The dataset will be created by executing the pipeline and saving the output of the last transformer in the pipeline. The dataset can be created by using the `@dataset` decorator. The decorator takes the following arguments:
+
+- `label`: The name of the dataset
+- `upload`: If `True`, the dataset will be uploaded to the cloud. If `False`, the dataset will be saved locally.
+
+```python
+def create_data():
+    df = load_data()
+    features = ['squareMeters', 'numberOfRooms', 'hasYard', 'hasPool', 'cityPartRange', 'cityCode', 'floors',
+                'numPrevOwners', 'made', 'isNewBuilt',
+                'hasStormProtector', 'basement', 'attic', 'garage', 'hasStorageRoom', 'hasGuestRoom']
+    y = df['price']
+    x_train, x_test, y_train, y_test = train_test_split(df[features], df['price'], random_state=42)
+    return {"x_train": x_train, "x_test": x_test, "y_train": y_train, "y_test": y_test}
+
+create_data()
+
+```
+To Fetch the dataset we can you `pureml.dataset.fetch()`
+```python
+df = pureml.dataset.fetch('Regression:Example3:v1')
+x_test = df['x_test']
+y_test = df['y_test']
+x_train= df['x_train']
+y_train = df['y_train']
+```
+
+## Creating a model to classify the dataset
+
+With the PureML model module, you can perform a variety of actions related to creating and managing models and branches.
+PureML assists you with training and tracking all of your machine learning project information, including ML models and datasets, using semantic versioning and full artifact logging.
+
+We can make a separate python file for the model. The model file will contain the model definition and the training code.
+Let's start by adding the required imports.
+
+```python
+import xgboost as xgb
+from sklearn.metrics import mean_squared_error
+import numpy as np
+from pureml.decorators import model
+```
+
+The model training function can be created by using the `@model` decorator. The decorator takes the model name and branch as the argument in the format `model_name:branch_name`.
+
+
+```python
+df = pureml.dataset.fetch('Regression:Example3:v1')
+x_test = df['x_test']
+y_test = df['y_test']
+y_train = df['y_train']
+x_train = df['x_train']
+@model(label='Regression_example_1_model:development2')
+def train_model():
+    MODEL_PARAMS = {
+        'booster': 'gbtree',
+        'learning_rate': 0.11,
+        'n_estimators': 77,
+        'objective': 'reg:squarederror',
+        'gamma': 1,
+        'max_depth': 4,
+        'reg_lambda': 1,
+        'reg_alpha': 1,
+        'subsample': 0.85,
+        'colsample_bytree': 1,
+        'min_child_weight': 2,
+        'seed': 42
+    }
+    xgbr = xgb.XGBRegressor(**MODEL_PARAMS)
+    xgbr.fit(x_train, y_train)
+    ypred2 = xgbr.predict(x_test)
+    rmse = np.sqrt(mean_squared_error(y_test, ypred2))
+    pureml.log(metrics={'RMSE': rmse})
+    print(f"RMSE: {rmse}")
+    return xgbr
+train_model()
+```
+<Note>
+	{" "}
+	The `pureml.log` function is used here to log the metrics and parameters of the
+	model.{" "}
+</Note>
+
+
+To fetch the model we can use `pureml.model.fetch()`
+
+```python
+import pureml
+pureml.model.fetch(label='Regression_example_1_model:development2:v1')
+```
+
+
+Once our training is complete our model will be ready to rock and roll🎸✨. But that's too much of a hassle. So for now, let's just do some predictions
+
+## Let's Now create a `predict.py` file to store your prediction logic
+```python
+from pureml import BasePredictor,Input,Output
+import pureml
+
+class Predictor(BasePredictor):
+    label = "Regression_example_1_model:development2:v1"
+    input = Input(type="pandas dataframe")
+    output = Output(type="numpy ndarray")
+
+    def load_models(self):
+        self.model = pureml.model.fetch(self.label)
+
+    def predict(self, data):
+        predictions = self.model.predict(data)
+
+        return predictions
+ ```
+ 
+## Add prediction to your model
+
+For registered models, prediction function along with its requirements and resources can be logged to be used for further processes like evaluating and packaging.
+
+PureML predict module has a method add. Here we are using the following arguments:
+
+- `label`: The name of the model (model_name:branch_name:version)
+- `paths`: The path to the predict.py file and requirements.txt file.
+
+Our predict.py file has the script to load the model and make predictions. The requirements.txt file has the dependencies required to run the predict.py file.
+
+<Note>
+	{" "}
+	You can know more about the prediction process [here](../prediction/versioning){" "}
+</Note>
+
+```python
+import pureml
+
+pureml.predict.add(label='Regression_example_1_model:development2:v1',paths={'predict':'predict.py'})
+```
+
+## Create your first Evaluation
+
+PureML has an eval method that runs a _task_type_ on a _label_model_ using a _label_dataset_.
+
+```python
+import pureml
+pureml.eval(task_type='regression',
+            label_model='Regression_example_1_model:development2:v1',
+            label_dataset='Regression:Example3:v1')
+```

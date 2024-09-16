@@ -1,0 +1,215 @@
+---
+title: Image Classification Using SVM
+---
+
+## Installation
+
+Pureml SDK & CLI can be directly installed using pip.
+
+```bash
+pip install pureml
+```
+
+## For additional project requirements we will need to install the following packages
+
+You can use the following command to install the packages.
+
+```bash
+pip install numpy==1.23.5 pandas==1.5.3 Pillow==9.5.0 scikit-learn==1.2.2
+
+```
+
+OR
+
+you can create a `requirements.txt` file with the following contents
+
+```properties
+pureml==0.3.8
+numpy==1.23.5
+pandas==1.5.3
+scikit-learn==1.2.2
+Pillow==9.5.0
+```
+
+and run the following command
+
+```bash
+pip install -r requirements.txt
+```
+
+## Load your dataset
+
+Start by creating a function to load the dataset into a DataFrame. We will use the @load_data() decorator from PureML SDK.
+
+```python
+from sklearn.datasets import fetch_lfw_people
+import pureml
+from pureml.decorators import dataset,load_data,model,transformer
+import pandas as pd
+import numpy as np
+from PIL import Image
+from sklearn.model_selection import train_test_split
+
+
+@load_data()
+def load_dataset():
+    face_data = fetch_lfw_people(min_faces_per_person=80)
+    return face_data
+
+face_data = load_dataset()
+```
+
+## Preprocess the data
+
+We can add a few more functions to preprocess the data. We will use the @transformer() decorator from PureML SDK.
+
+
+```python
+@transformer()
+def split_data(face_data):
+    X = face_data.data
+    Y = face_data.target
+    x_train,x_test,y_train,y_test = train_test_split(X,Y,random_state = 42)
+    return x_train,x_test,y_train,y_test
+```
+
+## Creating a dataset
+
+We can now create a dataset from the pipeline. The dataset will be created by executing the pipeline and saving the output of the last transformer in the pipeline. The dataset can be created by using the `@dataset` decorator. The decorator takes the following arguments:
+
+- `label`: The name of the dataset
+- `upload`: If `True`, the dataset will be uploaded to the cloud. If `False`, the dataset will be saved locally.
+
+```python
+@dataset(label='Imageclassification:data',parent='split_data',upload=True)
+def create_data():
+    face_data = load_dataset()
+    x_train,x_test,y_train,y_test = split_data(face_data)
+    return {"x_train":x_train,"x_test":x_test,"y_train":y_train,"y_test":y_test}
+
+create_data()
+```
+
+## Visualization 
+
+```python
+import matplotlib.pyplot as plt
+
+fig, ax = plt.subplots(3, 4)
+for i, axi in enumerate(ax.flat):
+    axi.imshow(face_data.images[i], cmap='bone')
+    axi.set(xticks=[], yticks=[],xlabel=face_data.target_names[face_data.target[i]])
+plt.show()
+```
+To Fetch the dataset we can use `pureml.dataset.fetch()` 
+```python
+
+data = pureml.dataset.fetch(label='Imageclassification:data:v1')
+x_train = data['x_train']
+x_test = data['x_test']
+y_train = data['y_train']
+y_test = data['y_test']
+
+```
+
+## Creating a model to classify the dataset
+
+With the PureML model module, you can perform a variety of actions related to creating and managing models and branches.
+PureML assists you with training and tracking all of your machine learning project information, including ML models and datasets, using semantic versioning and full artifact logging.
+
+We can make a separate python file for the model. The model file will contain the model definition and the training code.
+Let's start by adding the required imports.
+
+```python
+from sklearn.model_selection import GridSearchCV
+from sklearn.svm import SVC
+```
+
+The model training function can be created by using the `@model` decorator. The decorator takes the model name and branch as the argument in the format `model_name:branch_name`.
+
+
+```python
+data = pureml.dataset.fetch(label='Imageclassification:data:v1')
+x_train = data['x_train']
+x_test = data['x_test']
+y_train = data['y_train']
+y_test = data['y_test']
+
+@model(label='imageclassification:svm')
+def model_creation():
+    clf = SVC(class_weight='balanced', random_state=42)
+    parameters = {'C': [0.1, 1, 10],'gamma': [1e-07, 1e-08, 1e-06],'kernel' : ['rbf', 'linear'] }
+    grid_search = GridSearchCV(clf,parameters,n_jobs=-1,cv=5)
+    grid_search.fit(x_train,y_train)
+    pureml.log(metrics={'best_score':grid_search.best_score_},params={'parameters':grid_search.best_params_})
+    return grid_search
+
+model_creation()
+```
+To Fetch the Model we can use `pureml.model.fetch()`
+```python
+import pureml
+pureml.model.fetch('imageclassification:svm:v4')
+```
+
+Once our training is complete our model will be ready to rock and roll🎸✨. But that's too much of a hassle. So for now, let's just do some predictions
+
+## Let's Now create a `predict.py` file to store  prediction logic
+
+```python
+from pureml import BasePredictor, Input, Output
+import pureml
+
+
+class Predictor(BasePredictor):
+    label = 'imageclassification:svm:v1'
+    input = Input(type="numpy ndarray")
+    output = Output(type="numpy ndarray")
+
+    def load_models(self):
+        self.model = pureml.model.fetch('imageclassification:svm:v4')
+
+
+    def predict(self, data):
+        prediction = self.model.predict(data)
+        return prediction
+
+```
+
+## Add prediction to your model
+
+For registered models, prediction function along with its requirements and resources can be logged to be used for further processes like evaluating and packaging.
+
+PureML predict module has a method add. Here we are using the following arguments:
+
+- `label`: The name of the model (model_name:branch_name:version)
+- `paths`: The path to the predict.py file and requirements.txt file.
+
+Our predict.py file has the script to load the model and make predictions. The requirements.txt file has the dependencies required to run the predict.py file.
+
+<Note>
+	{" "}
+	You can know more about the prediction process [here](../prediction/versioning){" "}
+</Note>
+
+```python
+import pureml
+
+pureml.predict.add(label='imageclassification:svm:v4',paths={'predict':'predict.py'})
+```
+To Fetch the Predict file you can use `pureml.predict.fetch()`
+```python
+import pureml
+pureml.predict.fetch(label='imageclassification:svm:v4')
+```
+
+## Create your first Evaluation
+
+PureML has an eval method that runs a _task_type_ on a _label_model_ using a _label_dataset_.
+
+```python
+import pureml
+pureml.eval(label_model='imageclassification:svm:v4',
+            label_dataset='Imageclassification:data:v1',
+            task_type='classification')
+```

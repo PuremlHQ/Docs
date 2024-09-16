@@ -1,0 +1,215 @@
+---
+title: Classification on Drug Dataset
+---
+
+## Installation
+
+Pureml SDK & CLI can be directly installed using pip.
+
+```bash
+pip install pureml
+```
+
+## For additional project requirements we will need to install the following packages
+
+You can use the following command to install the packages.
+
+```bash
+pip install numpy==1.23.5 pandas==1.5.3  scikit-learn==1.2.2 
+```
+
+OR
+
+you can create a `requirements.txt` file with the following contents
+
+```properties
+numpy==1.23.5
+pandas==1.5.3
+scikit-learn==1.2.2 
+```
+
+and run the following command
+
+```bash
+pip install -r requirements.txt
+```
+
+## Download and load your dataset
+
+Download your dataset from [here](https://www.kaggle.com/code/amryasser22/drug-densitity/input).
+
+Start by creating a function to load the dataset into a DataFrame. We will use the @load_data() decorator from PureML SDK.
+
+```python
+import numpy as np
+import pandas as pd
+import pureml
+from pureml.decorators import model,dataset,load_data,transformer
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+
+@load_data()
+def load_dataset():
+    df = pd.read_csv('drug200.csv')
+    return df
+load_dataset()
+```
+
+## Preprocess the data
+
+
+We can add a few more functions to preprocess the data. We will use the @transformer() decorator from PureML SDK.
+
+
+```python
+@transformer()
+def convert_bp(df):
+    df['BP'] = df['BP'].replace({'HIGH':2,'NORMAL':1,'LOW':0})
+    return df
+
+@transformer()
+def convert_sex(df):
+    df['Sex'] = df['Sex'].replace({'M':0,'F':1})
+    return df
+
+@transformer()
+def convert_Cholesterol(df):
+    df['Cholesterol'] = df['Cholesterol'].replace({'HIGH':1,'NORMAL':0})
+    return df
+
+@transformer()
+def convert_Drug(df):
+    df['Drug'] = df['Drug'].replace({'drugA': 0, 'drugB': 1, 'drugC': 2, 'drugX': 3, 'DrugY': 4})
+    return df
+```
+
+## Creating a dataset
+
+We can now create a dataset from the pipeline. The dataset will be created by executing the pipeline and saving the output of the last transformer in the pipeline. The dataset can be created by using the `@dataset` decorator. The decorator takes the following arguments:
+
+- `label`: The name of the dataset
+- `upload`: If `True`, the dataset will be uploaded to the cloud. If `False`, the dataset will be saved locally.
+
+```python
+@dataset(label='Classification:development',upload=True)
+def create_dataset():
+    df = load_data()
+    df = convert_bp(df)
+    df = convert_sex(df)
+    df = convert_Cholesterol(df)
+    df = convert_Drug(df)
+    X = df.drop(columns = 'Drug')
+    y = df['Drug']
+    x_train,x_test,y_train,y_test = train_test_split(X,y)
+    return {'x_train':x_train,'x_test':x_test,'y_train':y_train,'y_test':y_test}
+
+create_dataset()
+```
+
+To fetch the model with `pureml.dataset.fetch()`
+
+```python
+import pureml
+df = pureml.dataset.fetch(label='Classification:development:v8')
+x_train = df['x_train']
+x_test = df['x_test']
+y_train = df['y_train']
+y_test = df['y_test']
+```
+
+## Creating a model to classify the dataset
+
+With the PureML model module, you can perform a variety of actions related to creating and managing models and branches.
+PureML assists you with training and tracking all of your machine learning project information, including ML models and datasets, using semantic versioning and full artifact logging.
+
+We can make a separate python file for the model. The model file will contain the model definition and the training code.
+Let's start by adding the required imports.
+
+```python
+from pureml.decorators import model
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+```
+The model training function can be created by using the `@model` decorator. The decorator takes the model name and branch as the argument in the format `model_name:branch_name`.
+
+
+```python
+df = pureml.dataset.fetch(label='Classification:development:v8')
+x_train = df['x_train']
+x_test = df['x_test']
+y_train = df['y_train']
+y_test = df['y_test']
+
+@model(label='Classification_model:development')
+def create_model():
+    clf = DecisionTreeClassifier()
+    clf.fit(x_train,y_train)
+    y_pred = clf.predict(x_test)
+    print(f'Accuracy : {accuracy_score(y_test,y_pred)}')
+    pureml.log(metrics={'Accuracy Score' : accuracy_score(y_test,y_pred)})
+    return clf
+create_model()
+
+```
+You can fetch the model using `pureml.model.fetch()`
+
+```python
+import pureml
+pureml.model.fetch(label='Classification_model:development:v1')
+```
+
+Once ouur training is complete our model will be ready to rock and roll🎸✨. But that's too much of a hassle. So for now, let's just do some predictions
+
+## Let's Now create a `predict.py` file to store your prediction logic
+```python
+from pureml import BasePredictor,Input,Output
+import pureml
+
+
+class Predictor(BasePredictor):
+    label = 'Classification_model:development:v1'
+    input = Input(type = "pandas dataframe")
+    output = Output(type = "numpy ndarray")
+
+    def load_models(self):
+        self.model = pureml.model.fetch(self.label)
+
+    def predict(self, data):
+        predictions = self.model.predict(data)
+
+        return predictions
+```
+
+## Add prediction to your model
+
+For registered models, prediction function along with its requirements and resources can be logged to be used for further processes like evaluating and packaging.
+
+PureML predict module has a method add. Here we are using the following arguments:
+
+- `label`: The name of the model (model_name:branch_name:version)
+- `paths`: The path to the predict.py file and requirements.txt file.
+
+Our predict.py file has the script to load the model and make predictions. The requirements.txt file has the dependencies required to run the predict.py file.
+
+<Note>
+	{" "}
+	You can know more about the prediction process [here](../prediction/versioning){" "}
+</Note>
+
+```python
+import pureml
+
+pureml.predict.add(label='Classification_model:development:v1',paths= {'predict': 'predict.py'})
+```
+
+## Create your first Evaluation
+
+PureML has an eval method that runs a _task_type_ on a _label_model_ using a _label_dataset_.
+
+```python
+import pureml
+pureml.eval(task_type='classification',
+            label_model='Classification_model:development:v1',
+            label_dataset='Classification:development:v8')
+```
